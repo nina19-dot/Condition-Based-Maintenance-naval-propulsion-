@@ -30,6 +30,24 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
+    /* El tema se fuerza aquí para no depender de .streamlit/config.toml:
+       si ese archivo falta o no se lee, la página seguiría en blanco. */
+    [data-testid="stAppViewContainer"] {{ background: {INK}; }}
+    [data-testid="stHeader"] {{ background: transparent; }}
+    [data-testid="stSidebar"] {{ background: {HULL}; }}
+    [data-testid="stAppViewContainer"] h1,
+    [data-testid="stAppViewContainer"] h2,
+    [data-testid="stAppViewContainer"] h3,
+    [data-testid="stAppViewContainer"] h4,
+    [data-testid="stAppViewContainer"] p,
+    [data-testid="stAppViewContainer"] li,
+    [data-testid="stAppViewContainer"] label,
+    [data-testid="stAppViewContainer"] strong {{ color: {DIAL}; }}
+    [data-testid="stMetricValue"] {{ color: {BRASS} !important; }}
+    [data-testid="stMetricLabel"] p {{ color: {MIST} !important; }}
+    [data-testid="stVerticalBlockBorderWrapper"] > div {{ border-color: {STEEL} !important; }}
+    hr {{ border-color: {STEEL} !important; }}
+
     html, body, [class*="css"] {{ font-family: 'Archivo', system-ui, sans-serif; }}
 
     h1 {{ font-weight: 800 !important; letter-spacing: -.022em; line-height: 1.08; }}
@@ -76,6 +94,16 @@ st.markdown(
               border: 1px solid {BRASS}; color: {BRASS}; margin-bottom: 14px; }}
 
     .esquema {{ width: 100%; overflow-x: auto; padding: 8px 0 4px; }}
+
+    .rejilla {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }}
+    .ficha {{ border: 1px solid {STEEL}; border-radius: 3px; padding: 8px 12px;
+              background: {HULL}; min-width: 132px; }}
+    .ficha .sigla {{ font-family: 'IBM Plex Mono', monospace; font-size: .92rem;
+                     font-weight: 600; color: {SEA}; display: block; }}
+    .ficha .desc {{ font-size: .74rem; color: {MIST}; display: block; margin-top: 2px; }}
+    .ficha.fuera {{ background: transparent; border-style: dashed; }}
+    .ficha.fuera .sigla {{ color: {SIGNAL}; text-decoration: line-through; }}
+    .ficha.fuera .desc {{ color: {STEEL}; }}
 
     footer, #MainMenu {{ visibility: hidden; }}
     </style>
@@ -220,14 +248,77 @@ MODELO_DEMO = {
 RANGOS = {"compresor": (0.950, 1.000), "turbina": (0.975, 1.000)}
 
 
+COMPONENTES = ("compresor", "turbina")
+
+# Nombres alternativos que puede traer el JSON según cómo lo hayan exportado
+ALIAS = {
+    "compresor": ("compresor", "kMc", "compressor", "gt_compressor"),
+    "turbina": ("turbina", "kMt", "turbine", "gt_turbine"),
+}
+
+CLAVES_SUBMODELO = {"intercepto", "coeficientes", "medias", "desviaciones"}
+
+
+def es_submodelo(obj):
+    """¿Este diccionario tiene la forma de un modelo entrenado?"""
+    return isinstance(obj, dict) and CLAVES_SUBMODELO.issubset(obj.keys())
+
+
+def normalizar_modelo(bruto):
+    """Acepta varios formatos de modelo.json y devuelve siempre la misma forma.
+
+    Formatos admitidos:
+      1. {"compresor": {...}, "turbina": {...}}      <- el recomendado
+      2. {"kMc": {...}, "kMt": {...}}                <- nombres del dataset
+      3. {"intercepto": ..., "coeficientes": {...}}  <- formato plano antiguo,
+                                                        se interpreta como compresor
+
+    Lo que falte se rellena con los coeficientes de demostración, de modo que
+    la aplicación nunca se cae por un archivo incompleto.
+
+    Devuelve (modelo, componentes_reales).
+    """
+    modelo = {c: MODELO_DEMO[c] for c in COMPONENTES}
+    reales = []
+
+    if not isinstance(bruto, dict):
+        return modelo, reales
+
+    # Formato plano de la primera versión: un único modelo, el del compresor
+    if es_submodelo(bruto):
+        modelo["compresor"] = bruto
+        return modelo, ["compresor"]
+
+    for componente, nombres in ALIAS.items():
+        for nombre in nombres:
+            if es_submodelo(bruto.get(nombre)):
+                modelo[componente] = bruto[nombre]
+                reales.append(componente)
+                break
+
+    return modelo, reales
+
+
 @st.cache_data
 def cargar_modelo():
     """Lee data/modelo.json si existe. Si no, usa los coeficientes de demostración."""
     ruta = Path(__file__).parent / "data" / "modelo.json"
-    if ruta.exists():
+    if not ruta.exists():
+        return {c: MODELO_DEMO[c] for c in COMPONENTES}, [], None
+
+    try:
         with open(ruta, encoding="utf-8") as f:
-            return json.load(f), True
-    return MODELO_DEMO, False
+            bruto = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        # Un archivo corrupto no debe tumbar la web: se avisa y se sigue
+        return {c: MODELO_DEMO[c] for c in COMPONENTES}, [], f"No se pudo leer modelo.json: {e}"
+
+    modelo, reales = normalizar_modelo(bruto)
+    aviso = None
+    if not reales:
+        aviso = ("modelo.json no tiene la estructura esperada. "
+                 "Se usan los coeficientes de demostración.")
+    return modelo, reales, aviso
 
 
 def predecir(submodelo, entradas, rango):
@@ -334,7 +425,7 @@ def pesos_corto(n):
     return f"${n:,.0f}"
 
 
-modelo, modelo_real = cargar_modelo()
+modelo, componentes_reales, aviso_modelo = cargar_modelo()
 
 
 # =============================================================================
@@ -425,32 +516,65 @@ st.divider()
 # 6. LOS DIECISÉIS SENSORES
 # =============================================================================
 
-st.header("Qué mide cada sensor y para qué sirve")
+st.header("De dieciséis sensores a trece")
 st.markdown(
-    '<p class="rotulo">Ninguno de estos instrumentos mide el desgaste. Todos miden '
-    'consecuencias del desgaste. Ese es el problema que resuelve el modelo.</p>',
+    '<p class="rotulo">Ninguno de estos instrumentos mide el desgaste: todos miden '
+    'consecuencias del desgaste. El primer trabajo del análisis fue averiguar cuáles de '
+    'ellos aportan información y cuáles sobran.</p>',
     unsafe_allow_html=True,
 )
 st.write("")
 
-sensores = [
-    ("Admisión de aire", "T1, P1", "Temperatura y presión del aire ambiente antes de entrar al compresor.", "Constantes en todo el conjunto: se descartan"),
-    ("Compresor", "T2, P2", "Temperatura y presión del aire ya comprimido.", "Un compresor sucio comprime peor y calienta más"),
-    ("Combustión", "mf, TIC", "Flujo de combustible y control de inyección de la turbina.", "Aquí está el dinero: mf va en kg/s"),
-    ("Turbina de alta presión", "T48, P48", "Temperatura y presión de los gases a la salida.", "Sube cuando la máquina trabaja forzada"),
-    ("Turbina de potencia", "GTT, GTn, GGn, Pexh", "Par, revoluciones de la turbina y del generador de gas, presión de escape.", "La potencia que sale de la planta"),
-    ("Propulsión", "lp, v, Ts, Tp", "Palanca, velocidad del buque y par de cada hélice.", "Ts y Tp son idénticos: se conserva uno"),
+# (sigla, qué mide, se conserva)
+SENSORES = [
+    ("lp",   "Posición de palanca",         True),
+    ("v",    "Velocidad del buque",         True),
+    ("GTT",  "Par de la turbina",           True),
+    ("GTn",  "Revoluciones de turbina",     True),
+    ("GGn",  "Revoluciones generador gas",  True),
+    ("Ts",   "Par hélice de estribor",      True),
+    ("Tp",   "Par hélice de babor",         False),
+    ("T48",  "Temperatura salida AP",       True),
+    ("T1",   "Temperatura de admisión",     False),
+    ("T2",   "Temperatura salida compresor", True),
+    ("P48",  "Presión salida AP",           True),
+    ("P1",   "Presión de admisión",         False),
+    ("P2",   "Presión salida compresor",    True),
+    ("Pexh", "Presión de escape",           True),
+    ("TIC",  "Control de inyección",        True),
+    ("mf",   "Flujo de combustible",        True),
 ]
 
-for etapa, cols, que_mide, nota in sensores:
-    with st.container(border=True):
-        a, b, c = st.columns([1.1, 2.4, 1.6])
-        a.markdown(f"**{etapa}**  \n<span style='font-family:IBM Plex Mono;"
-                   f"font-size:.8rem;color:{BRASS}'>{cols}</span>",
-                   unsafe_allow_html=True)
-        b.markdown(f"<p class='rotulo'>{que_mide}</p>", unsafe_allow_html=True)
-        c.markdown(f"<p class='rotulo' style='color:{DIAL}'>{nota}</p>",
-                   unsafe_allow_html=True)
+fichas = "".join(
+    f'<div class="ficha{"" if sirve else " fuera"}">'
+    f'<span class="sigla">{sigla}</span>'
+    f'<span class="desc">{desc}</span></div>'
+    for sigla, desc, sirve in SENSORES
+)
+st.markdown(f'<div class="rejilla">{fichas}</div>', unsafe_allow_html=True)
+
+st.write("")
+
+descartes = [
+    (SIGNAL, "T1 y P1 nunca cambian",
+     "La temperatura y la presión del aire de admisión valen lo mismo en las 11.934 "
+     "lecturas: el simulador fija condiciones atmosféricas estándar. Una columna sin "
+     "variación no puede explicar variación en el desgaste."),
+    (SIGNAL, "Tp repite a Ts",
+     "El par del eje de babor coincide con el de estribor hasta el último decimal en todos "
+     "los casos, porque la reductora reparte por igual. La diferencia máxima entre ambas "
+     "columnas es exactamente cero."),
+    (SEA, "Quedan trece",
+     "Son los que alimentan los dos modelos. Trece señales que la planta ya produce, sin "
+     "instalar un solo instrumento nuevo ni desmontar la máquina."),
+]
+
+for col, (color, titulo, texto) in zip(st.columns(3, gap="medium"), descartes):
+    col.markdown(
+        f'<div class="placa" style="border-color:{color}">'
+        f'<h4>{titulo}</h4><p>{texto}</p></div>',
+        unsafe_allow_html=True,
+    )
 
 st.write("")
 st.divider()
@@ -554,20 +678,35 @@ st.divider()
 # 9. ESTIMADOR DE DEGRADACIÓN (COMPRESOR Y TURBINA)
 # =============================================================================
 
-if not modelo_real:
-    st.markdown('<span class="aviso">Versión alfa, coeficientes de demostración</span>',
-                unsafe_allow_html=True)
+if aviso_modelo:
+    st.warning(aviso_modelo)
+
+demo = [c for c in COMPONENTES if c not in componentes_reales]
+if demo:
+    etiquetas_demo = " y ".join(c for c in demo)
+    st.markdown(f'<span class="aviso">Versión alfa: {etiquetas_demo} con coeficientes '
+                f'de demostración</span>', unsafe_allow_html=True)
 
 st.header("Estimador de degradación de la planta")
 st.markdown(
     '<p class="rotulo">Mueve los controles como si fueran las lecturas de la sala de '
-    'máquinas. El modelo devuelve por separado el estado del compresor y el de la turbina, '
-    'porque se degradan por causas distintas y a ritmos distintos.</p>',
+    'máquinas. El compresor y la turbina se estiman por separado, porque se degradan por '
+    'causas distintas y en rangos distintos.</p>',
     unsafe_allow_html=True,
 )
 st.write("")
 
-controles_col, compresor_col, turbina_col = st.columns([1.1, 0.95, 0.95], gap="medium")
+VISTAS = {
+    "Compresor": ["compresor"],
+    "Turbina": ["turbina"],
+    "Los dos": ["compresor", "turbina"],
+}
+
+vista = st.radio("Componente a estimar", options=list(VISTAS),
+                 index=0, horizontal=True, label_visibility="collapsed")
+elegidos = VISTAS[vista]
+
+controles_col, salida_col = st.columns([1, 1.25], gap="large")
 
 with controles_col:
     velocidad = st.select_slider("Velocidad del buque (nudos)",
@@ -582,21 +721,24 @@ with controles_col:
 entradas = {"velocidad": velocidad, "temperatura": temperatura,
             "combustible": combustible, "presion": presion}
 
-for col, clave, nombre in [(compresor_col, "compresor", "Compresor"),
-                           (turbina_col, "turbina", "Turbina")]:
-    valor = predecir(modelo[clave], entradas, RANGOS[clave])
-    etiqueta, consejo, fondo, tinta = diagnostico(valor, RANGOS[clave], nombre)
-    with col:
-        st.markdown(f"<p class='rotulo' style='text-align:center;color:{DIAL};"
-                    f"font-weight:600'>{nombre}</p>", unsafe_allow_html=True)
-        st.plotly_chart(manometro(valor, RANGOS[clave], nombre),
-                        use_container_width=True, config={"displayModeBar": False})
-        st.markdown(
-            f'<div class="semaforo" style="background:{fondo};color:{tinta}">{etiqueta}</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(f'<p class="rotulo" style="margin-top:10px">{consejo}</p>',
-                    unsafe_allow_html=True)
+with salida_col:
+    for col, clave in zip(st.columns(len(elegidos), gap="medium"), elegidos):
+        nombre = clave.capitalize()
+        valor = predecir(modelo[clave], entradas, RANGOS[clave])
+        etiqueta, consejo, fondo, tinta = diagnostico(valor, RANGOS[clave], nombre)
+        with col:
+            st.markdown(f"<p class='rotulo' style='text-align:center;color:{DIAL};"
+                        f"font-weight:600'>{nombre}</p>", unsafe_allow_html=True)
+            st.plotly_chart(manometro(valor, RANGOS[clave], nombre),
+                            use_container_width=True,
+                            config={"displayModeBar": False})
+            st.markdown(
+                f'<div class="semaforo" style="background:{fondo};color:{tinta}">'
+                f'{etiqueta}</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(f'<p class="rotulo" style="margin-top:10px">{consejo}</p>',
+                        unsafe_allow_html=True)
 
 st.write("")
 st.divider()
