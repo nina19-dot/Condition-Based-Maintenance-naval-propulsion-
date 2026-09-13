@@ -14,16 +14,22 @@ def entrenar_modelos(data):
 
     X = data[FEATURES]
 
-    # Random Forest kMc
-    y_kMc = data['kMc']
+    # ========================================================
+    # COMPRESOR kMc
+    # ========================================================
 
-    X_train, X_test, y_train_kMc, y_test_kMc = (
-        train_test_split(
-            X,
-            y_kMc,
-            test_size=0.20,
-            random_state=42
-        )
+    y_kMc = data["kMc"]
+
+    (
+        X_train,
+        X_test,
+        y_train_kMc,
+        y_test_kMc
+    ) = train_test_split(
+        X,
+        y_kMc,
+        test_size=0.20,
+        random_state=42
     )
 
     rf_kMc = RandomForestRegressor(
@@ -37,8 +43,11 @@ def entrenar_modelos(data):
         y_train_kMc
     )
 
-    # Random Forest kMt
-    y_kMt = data['kMt']
+    # ========================================================
+    # TURBINA kMt
+    # ========================================================
+
+    y_kMt = data["kMt"]
 
     (
         X_train_mt,
@@ -72,31 +81,32 @@ def crear_observacion(
 ):
 
     observacion = {
-        'v': velocidad
+        "v": velocidad
     }
 
     observacion.update(valores)
 
-    observacion = pd.DataFrame(
+    return pd.DataFrame(
         [observacion],
         columns=FEATURES
     )
 
-    return observacion
 
-
-def predecir_coeficientes(
-    rf_kMc,
-    rf_kMt,
+def predecir_kMc(
+    modelo,
     observacion
 ):
 
-    pred_kMc = rf_kMc.predict(
+    return modelo.predict(
         observacion
     )[0]
 
-    pred_kMt = rf_kMt.predict(
+
+def predecir_kMt(
+    modelo,
+    observacion
+):
+
+    return modelo.predict(
         observacion
     )[0]
-
-    return pred_kMc, pred_kMt
