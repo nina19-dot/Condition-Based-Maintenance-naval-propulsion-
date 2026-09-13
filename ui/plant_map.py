@@ -18,17 +18,17 @@ def esquema_planta(
     componente=None
 ):
 
-    compressor_fill = (
-        SIGNAL
+    compresor = (
+        "#E5483F"
         if componente in [
             "compressor",
             "both"
         ]
-        else "#4F9BD8"
+        else "#4E9FDB"
     )
 
-    turbine_fill = (
-        BRASS
+    turbina = (
+        "#F59E0B"
         if componente in [
             "turbine",
             "both"
@@ -38,331 +38,497 @@ def esquema_planta(
 
     html = f"""
     <style>
+
         body {{
             margin: 0;
+            padding: 0;
             background: {INK};
-            font-family: Arial;
         }}
+
+        svg {{
+            width: 100%;
+            display: block;
+        }}
+
     </style>
 
+
     <svg
-        viewBox="0 0 1100 440"
-        width="100%"
+        viewBox="0 0 1200 520"
         xmlns="http://www.w3.org/2000/svg"
     >
 
-        <!-- TÍTULO -->
-        <text
-            x="25"
-            y="30"
-            fill="{MIST}"
-            font-size="15"
-        >
-            CODLAG PROPULSION PLANT
-        </text>
+        <!-- ================================================= -->
+        <!-- HÉLICES -->
+        <!-- ================================================= -->
 
-
-        <!-- HÉLICE SUPERIOR -->
         <line
-            x1="60"
-            y1="125"
-            x2="930"
-            y2="125"
+            x1="70"
+            y1="145"
+            x2="1040"
+            y2="145"
             stroke="{DIAL}"
-            stroke-width="7"
+            stroke-width="8"
         />
+
+        <line
+            x1="70"
+            y1="385"
+            x2="1040"
+            y2="385"
+            stroke="{DIAL}"
+            stroke-width="8"
+        />
+
+
+        <!-- Hélice superior -->
 
         <ellipse
-            cx="45"
-            cy="125"
-            rx="10"
-            ry="30"
+            cx="50"
+            cy="145"
+            rx="12"
+            ry="38"
             fill="none"
             stroke="{DIAL}"
-            stroke-width="5"
+            stroke-width="6"
         />
 
-
-        <!-- HÉLICE INFERIOR -->
         <line
-            x1="60"
-            y1="330"
-            x2="930"
-            y2="330"
+            x1="50"
+            y1="107"
+            x2="25"
+            y2="75"
             stroke="{DIAL}"
-            stroke-width="7"
+            stroke-width="6"
         />
+
+        <line
+            x1="50"
+            y1="183"
+            x2="25"
+            y2="215"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+
+        <!-- Hélice inferior -->
 
         <ellipse
-            cx="45"
-            cy="330"
-            rx="10"
-            ry="30"
+            cx="50"
+            cy="385"
+            rx="12"
+            ry="38"
             fill="none"
             stroke="{DIAL}"
-            stroke-width="5"
+            stroke-width="6"
+        />
+
+        <line
+            x1="50"
+            y1="347"
+            x2="25"
+            y2="315"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+        <line
+            x1="50"
+            y1="423"
+            x2="25"
+            y2="455"
+            stroke="{DIAL}"
+            stroke-width="6"
         />
 
 
+        <!-- ================================================= -->
         <!-- GENERADORES DIÉSEL -->
-        <rect
-            x="160"
-            y="65"
-            width="180"
-            height="55"
-            rx="5"
-            fill="#7138A8"
-            stroke="{DIAL}"
-            stroke-width="3"
-        />
+        <!-- ================================================= -->
 
         <text
             x="250"
-            y="55"
+            y="45"
             text-anchor="middle"
             fill="{MIST}"
-            font-size="14"
+            font-size="18"
         >
-            Diesel generators
+            Generadores diesel
         </text>
 
 
-        <!-- MOTOR SUPERIOR -->
         <rect
-            x="850"
+            x="150"
             y="65"
-            width="105"
-            height="65"
-            rx="4"
-            fill="{BRASS}"
+            width="200"
+            height="60"
+            rx="6"
+            fill="#7138A8"
             stroke="{DIAL}"
-            stroke-width="3"
+            stroke-width="4"
         />
+
+        <circle cx="180" cy="95" r="13"
+            fill="{INK}" stroke="{DIAL}" stroke-width="3"/>
+
+        <circle cx="220" cy="95" r="13"
+            fill="{INK}" stroke="{DIAL}" stroke-width="3"/>
+
+        <circle cx="260" cy="95" r="13"
+            fill="{INK}" stroke="{DIAL}" stroke-width="3"/>
+
+        <circle cx="300" cy="95" r="13"
+            fill="{INK}" stroke="{DIAL}" stroke-width="3"/>
+
+
+        <!-- ================================================= -->
+        <!-- TURBINA DE GAS -->
+        <!-- ================================================= -->
 
         <text
-            x="900"
-            y="55"
+            x="400"
+            y="205"
             text-anchor="middle"
             fill="{MIST}"
-            font-size="14"
+            font-size="20"
         >
-            Electric motor
+            Turbina de gas
         </text>
 
 
-        <!-- MOTOR INFERIOR -->
         <rect
-            x="850"
-            y="285"
-            width="105"
-            height="65"
-            rx="4"
-            fill="{BRASS}"
-            stroke="{DIAL}"
-            stroke-width="3"
-        />
-
-
-        <!-- REDUCTORAS -->
-        <rect
-            x="750"
-            y="75"
-            width="42"
-            height="110"
-            fill="{SEA}"
-            stroke="{DIAL}"
-            stroke-width="3"
-        />
-
-        <rect
-            x="750"
-            y="255"
-            width="42"
-            height="110"
-            fill="{SEA}"
-            stroke="{DIAL}"
-            stroke-width="3"
-        />
-
-
-        <!-- TURBINA DE GAS -->
-        <rect
-            x="230"
-            y="180"
-            width="330"
-            height="105"
-            rx="7"
+            x="180"
+            y="225"
+            width="440"
+            height="135"
+            rx="10"
             fill="{HULL}"
             stroke="{STEEL}"
-            stroke-width="3"
+            stroke-width="4"
+        />
+
+
+        <!-- Compresor -->
+
+        <polygon
+            points="
+                205,250
+                370,270
+                370,315
+                205,335
+            "
+            fill="{compresor}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
+        <line
+            x1="245"
+            y1="255"
+            x2="245"
+            y2="330"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="285"
+            y1="260"
+            x2="285"
+            y2="325"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="325"
+            y1="266"
+            x2="325"
+            y2="319"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
+        <!-- Cámara combustión -->
+
+        <rect
+            x="380"
+            y="255"
+            width="80"
+            height="75"
+            fill="{SIGNAL}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
+        <!-- Turbina -->
+
+        <polygon
+            points="
+                475,265
+                595,245
+                595,340
+                475,320
+            "
+            fill="{turbina}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
+        <line
+            x1="510"
+            y1="260"
+            x2="510"
+            y2="325"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="550"
+            y1="255"
+            x2="550"
+            y2="332"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
+        <!-- Labels -->
+
+        <text
+            x="285"
+            y="350"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="15"
+        >
+            Compresor
+        </text>
+
+        <text
+            x="420"
+            y="350"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="15"
+        >
+            Combustión
+        </text>
+
+        <text
+            x="535"
+            y="350"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="15"
+        >
+            Turbina
+        </text>
+
+
+        <!-- ================================================= -->
+        <!-- EMBRAGUES -->
+        <!-- ================================================= -->
+
+        <circle
+            cx="690"
+            cy="235"
+            r="25"
+            fill="{HULL}"
+            stroke="{SIGNAL}"
+            stroke-width="5"
+        />
+
+        <circle
+            cx="690"
+            cy="355"
+            r="25"
+            fill="{HULL}"
+            stroke="{SIGNAL}"
+            stroke-width="5"
         />
 
         <text
-            x="395"
-            y="170"
+            x="690"
+            y="305"
             text-anchor="middle"
             fill="{MIST}"
             font-size="16"
         >
-            Gas turbine
+            Embragues
         </text>
 
 
-        <!-- COMPRESOR -->
-        <polygon
-            points="
-            250,205
-            360,225
-            360,260
-            250,275
-            "
-            fill="{compressor_fill}"
-            stroke="{DIAL}"
-            stroke-width="3"
-        />
+        <!-- ================================================= -->
+        <!-- REDUCTORAS -->
+        <!-- ================================================= -->
 
-        <text
-            x="305"
-            y="297"
-            text-anchor="middle"
-            fill="{DIAL}"
-            font-size="13"
-        >
-            Compressor
-        </text>
-
-
-        <!-- COMBUSTIÓN -->
         <rect
-            x="365"
-            y="214"
-            width="62"
-            height="55"
-            fill="{SIGNAL}"
+            x="765"
+            y="90"
+            width="55"
+            height="140"
+            fill="{SEA}"
             stroke="{DIAL}"
-            stroke-width="3"
+            stroke-width="4"
         />
 
+        <rect
+            x="765"
+            y="310"
+            width="55"
+            height="140"
+            fill="{SEA}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
         <text
-            x="396"
-            y="242"
+            x="792"
+            y="70"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="12"
+            fill="{MIST}"
+            font-size="17"
         >
-            Comb.
+            Cajas
         </text>
 
 
-        <!-- TURBINA -->
-        <polygon
-            points="
-            440,215
-            540,195
-            540,280
-            440,260
-            "
-            fill="{turbine_fill}"
+        <!-- ================================================= -->
+        <!-- MOTORES ELÉCTRICOS -->
+        <!-- ================================================= -->
+
+        <rect
+            x="875"
+            y="90"
+            width="130"
+            height="80"
+            rx="5"
+            fill="{BRASS}"
             stroke="{DIAL}"
-            stroke-width="3"
+            stroke-width="4"
         />
 
+        <rect
+            x="875"
+            y="350"
+            width="130"
+            height="80"
+            rx="5"
+            fill="{BRASS}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
         <text
-            x="490"
-            y="300"
+            x="940"
+            y="70"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="13"
+            fill="{MIST}"
+            font-size="17"
         >
-            Turbine
+            Motores eléctricos
         </text>
 
 
-        <!-- EJE TURBINA -->
+        <!-- ================================================= -->
+        <!-- CONEXIONES TURBINA -->
+        <!-- ================================================= -->
+
         <line
-            x1="560"
-            y1="235"
-            x2="700"
+            x1="620"
+            y1="292"
+            x2="665"
             y2="235"
             stroke="{DIAL}"
-            stroke-width="7"
-        />
-
-
-        <!-- EMBRAGUES -->
-        <circle
-            cx="690"
-            cy="180"
-            r="22"
-            fill="{HULL}"
-            stroke="{SIGNAL}"
-            stroke-width="4"
-        />
-
-        <circle
-            cx="690"
-            cy="290"
-            r="22"
-            fill="{HULL}"
-            stroke="{SIGNAL}"
-            stroke-width="4"
-        />
-
-
-        <!-- RAMIFICACIONES -->
-        <line
-            x1="700"
-            y1="235"
-            x2="750"
-            y2="125"
-            stroke="{DIAL}"
-            stroke-width="5"
+            stroke-width="6"
         />
 
         <line
-            x1="700"
-            y1="235"
-            x2="750"
-            y2="330"
+            x1="620"
+            y1="292"
+            x2="665"
+            y2="355"
             stroke="{DIAL}"
-            stroke-width="5"
+            stroke-width="6"
         />
 
 
-        <!-- SENSORES PRINCIPALES -->
-        <text
-            x="280"
-            y="220"
-            fill="{INK}"
-            font-size="12"
-        >
-            T2 · P2
-        </text>
+        <line
+            x1="715"
+            y1="235"
+            x2="765"
+            y2="160"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
 
-        <text
-            x="460"
+        <line
+            x1="715"
+            y1="355"
+            x2="765"
+            y2="385"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- LEYENDA -->
+        <!-- ================================================= -->
+
+        <rect
+            x="1040"
             y="235"
-            fill="{DIAL}"
-            font-size="12"
-        >
-            T48 · P48
-        </text>
+            width="125"
+            height="40"
+            fill="{compresor}"
+            rx="4"
+        />
 
         <text
-            x="575"
-            y="220"
-            fill="{BRASS}"
-            font-size="12"
+            x="1102"
+            y="260"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="14"
         >
-            GTT · GTn · GGn
+            Compresor
         </text>
 
+
+        <rect
+            x="1040"
+            y="295"
+            width="125"
+            height="40"
+            fill="{turbina}"
+            rx="4"
+        />
+
+        <text
+            x="1102"
+            y="320"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="14"
+        >
+            Turbina
+        </text>
 
     </svg>
     """
 
     components.html(
         html,
-        height=390,
+        height=530,
         scrolling=False
     )
