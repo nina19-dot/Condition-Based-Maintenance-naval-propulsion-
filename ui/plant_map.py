@@ -14,6 +14,10 @@ from config import (
 )
 
 
+# ============================================================
+# FORMATO DE VALORES
+# ============================================================
+
 def _fmt(valor, dec=2):
 
     if valor is None:
@@ -21,6 +25,10 @@ def _fmt(valor, dec=2):
 
     return f"{valor:.{dec}f}"
 
+
+# ============================================================
+# PLANTA CODLAG
+# ============================================================
 
 def esquema_planta(
     componente=None,
@@ -32,19 +40,21 @@ def esquema_planta(
         valores = {}
 
     # ========================================================
-    # COLORES DE LOS COMPONENTES
+    # COLORES
     # ========================================================
 
+    # Compresor
     comp_color = (
         "#E5483F"
         if componente in ["compressor", "both"]
         else "#4E9FDB"
     )
 
+    # Turbina siempre naranja
     turb_color = (
         "#F59E0B"
         if componente in ["turbine", "both"]
-        else "#9B5DE5"
+        else "#D98A20"
     )
 
     # ========================================================
@@ -102,7 +112,7 @@ def esquema_planta(
         valores.get("Pexh")
     )
 
-    # Tp = Ts en este dataset.
+    # Tp y Ts son equivalentes en el dataset
     tp = _fmt(
         valores.get(
             "Tp",
@@ -111,7 +121,7 @@ def esquema_planta(
     )
 
     # ========================================================
-    # SVG
+    # HTML / SVG
     # ========================================================
 
     html = f"""
@@ -161,44 +171,45 @@ def esquema_planta(
             fill: none;
             stroke: {MIST};
             stroke-width: 3;
-            stroke-dasharray: 9 7;
+            stroke-dasharray: 8 7;
         }}
 
         .line-compressor {{
             fill: none;
             stroke: {comp_color};
             stroke-width: 3;
-            stroke-dasharray: 9 7;
+            stroke-dasharray: 8 7;
         }}
 
         .line-combustion {{
             fill: none;
             stroke: {SIGNAL};
             stroke-width: 3;
-            stroke-dasharray: 9 7;
+            stroke-dasharray: 8 7;
         }}
 
         .line-turbine {{
             fill: none;
             stroke: {turb_color};
             stroke-width: 3;
-            stroke-dasharray: 9 7;
+            stroke-dasharray: 8 7;
         }}
 
     </style>
 
     </head>
 
+
     <body>
 
 
     <svg
-        viewBox="0 0 1600 930"
+        viewBox="0 0 1600 900"
         xmlns="http://www.w3.org/2000/svg"
     >
 
         <!-- ================================================= -->
-        <!-- DEFINICIONES -->
+        <!-- SOMBRAS -->
         <!-- ================================================= -->
 
         <defs>
@@ -215,93 +226,17 @@ def esquema_planta(
 
             </filter>
 
-
-            <!-- Flecha neutra -->
-
-            <marker
-                id="arrow-neutral"
-                markerWidth="10"
-                markerHeight="10"
-                refX="8"
-                refY="5"
-                orient="auto"
-            >
-
-                <path
-                    d="M 0 0 L 10 5 L 0 10 z"
-                    fill="{MIST}"
-                />
-
-            </marker>
-
-
-            <!-- Flecha compresor -->
-
-            <marker
-                id="arrow-compressor"
-                markerWidth="10"
-                markerHeight="10"
-                refX="8"
-                refY="5"
-                orient="auto"
-            >
-
-                <path
-                    d="M 0 0 L 10 5 L 0 10 z"
-                    fill="{comp_color}"
-                />
-
-            </marker>
-
-
-            <!-- Flecha combustión -->
-
-            <marker
-                id="arrow-combustion"
-                markerWidth="10"
-                markerHeight="10"
-                refX="8"
-                refY="5"
-                orient="auto"
-            >
-
-                <path
-                    d="M 0 0 L 10 5 L 0 10 z"
-                    fill="{SIGNAL}"
-                />
-
-            </marker>
-
-
-            <!-- Flecha turbina -->
-
-            <marker
-                id="arrow-turbine"
-                markerWidth="10"
-                markerHeight="10"
-                refX="8"
-                refY="5"
-                orient="auto"
-            >
-
-                <path
-                    d="M 0 0 L 10 5 L 0 10 z"
-                    fill="{turb_color}"
-                />
-
-            </marker>
-
         </defs>
 
 
         <!-- ================================================= -->
-        <!-- EJES DE PROPULSIÓN -->
+        <!-- EJES PRINCIPALES -->
         <!-- ================================================= -->
 
         <line
             x1="130"
             y1="285"
-            x2="1410"
+            x2="1480"
             y2="285"
             stroke="{DIAL}"
             stroke-width="8"
@@ -310,7 +245,7 @@ def esquema_planta(
         <line
             x1="130"
             y1="650"
-            x2="1410"
+            x2="1480"
             y2="650"
             stroke="{DIAL}"
             stroke-width="8"
@@ -321,8 +256,10 @@ def esquema_planta(
         <!-- HÉLICES -->
         <!-- ================================================= -->
 
+        <!-- Hélice estribor -->
+
         <ellipse
-            cx="95"
+            cx="85"
             cy="285"
             rx="13"
             ry="48"
@@ -331,8 +268,19 @@ def esquema_planta(
             stroke-width="6"
         />
 
+        <text
+            x="28"
+            y="205"
+            class="component-label"
+        >
+            Hélice estribor
+        </text>
+
+
+        <!-- Hélice babor -->
+
         <ellipse
-            cx="95"
+            cx="85"
             cy="650"
             rx="13"
             ry="48"
@@ -341,18 +289,9 @@ def esquema_planta(
             stroke-width="6"
         />
 
-
         <text
-            x="25"
-            y="215"
-            class="component-label"
-        >
-            Hélice estribor
-        </text>
-
-        <text
-            x="25"
-            y="580"
+            x="28"
+            y="570"
             class="component-label"
         >
             Hélice babor
@@ -364,8 +303,8 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="315"
-            y="165"
+            x="310"
+            y="155"
             text-anchor="middle"
             class="component-label"
         >
@@ -374,8 +313,8 @@ def esquema_planta(
 
 
         <rect
-            x="200"
-            y="195"
+            x="195"
+            y="190"
             width="235"
             height="72"
             rx="8"
@@ -386,7 +325,7 @@ def esquema_planta(
 
 
         <rect
-            x="200"
+            x="195"
             y="560"
             width="235"
             height="72"
@@ -398,8 +337,8 @@ def esquema_planta(
 
 
         <rect
-            x="200"
-            y="675"
+            x="195"
+            y="680"
             width="235"
             height="72"
             rx="8"
@@ -449,7 +388,6 @@ def esquema_planta(
             stroke="{DIAL}"
             stroke-width="4"
         />
-
 
         <line
             x1="415"
@@ -506,7 +444,6 @@ def esquema_planta(
             stroke="{DIAL}"
             stroke-width="4"
         />
-
 
         <line
             x1="760"
@@ -570,7 +507,6 @@ def esquema_planta(
             Embragues
         </text>
 
-
         <circle
             cx="950"
             cy="395"
@@ -596,13 +532,12 @@ def esquema_planta(
 
         <text
             x="1115"
-            y="175"
+            y="170"
             text-anchor="middle"
             class="component-label"
         >
             Cajas
         </text>
-
 
         <rect
             x="1080"
@@ -633,13 +568,12 @@ def esquema_planta(
 
         <text
             x="1325"
-            y="180"
+            y="175"
             text-anchor="middle"
             class="component-label"
         >
             Motores eléctricos
         </text>
-
 
         <rect
             x="1240"
@@ -706,7 +640,7 @@ def esquema_planta(
 
 
         <!-- ================================================= -->
-        <!-- CAJAS DE TELEMETRÍA -->
+        <!-- TELEMETRÍA -->
         <!-- ================================================= -->
 
 
@@ -715,9 +649,9 @@ def esquema_planta(
         <g filter="url(#shadow)">
 
             <rect
-                x="20"
-                y="385"
-                width="210"
+                x="15"
+                y="390"
+                width="205"
                 height="90"
                 rx="8"
                 fill="{HULL}"
@@ -726,16 +660,16 @@ def esquema_planta(
             />
 
             <text
-                x="40"
-                y="417"
+                x="35"
+                y="422"
                 class="box-title"
             >
                 Torque hélices
             </text>
 
             <text
-                x="40"
-                y="450"
+                x="35"
+                y="455"
                 class="box-text"
             >
                 Tp = {tp} kN m
@@ -913,12 +847,13 @@ def esquema_planta(
 
 
         <!-- ESCAPE -->
+        <!-- Lo colocamos más arriba -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="1180"
-                y="390"
+                x="1165"
+                y="365"
                 width="180"
                 height="80"
                 rx="8"
@@ -928,16 +863,16 @@ def esquema_planta(
             />
 
             <text
-                x="1200"
-                y="422"
+                x="1185"
+                y="397"
                 class="box-title"
             >
                 Escape
             </text>
 
             <text
-                x="1200"
-                y="452"
+                x="1185"
+                y="427"
                 class="box-text"
             >
                 Pexh = {pexh} bar
@@ -947,12 +882,13 @@ def esquema_planta(
 
 
         <!-- OPERACIÓN -->
+        <!-- Lo bajamos para separarlo de Escape -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="1375"
-                y="395"
+                x="1370"
+                y="500"
                 width="200"
                 height="110"
                 rx="8"
@@ -962,24 +898,24 @@ def esquema_planta(
             />
 
             <text
-                x="1395"
-                y="428"
+                x="1390"
+                y="533"
                 class="box-title"
             >
                 Operación
             </text>
 
             <text
-                x="1395"
-                y="460"
+                x="1390"
+                y="565"
                 class="box-text"
             >
                 lp = {lp}
             </text>
 
             <text
-                x="1395"
-                y="490"
+                x="1390"
+                y="595"
                 class="box-text"
             >
                 v = {v} knots
@@ -989,190 +925,168 @@ def esquema_planta(
 
 
         <!-- ================================================= -->
-        <!-- CONECTORES DE TELEMETRÍA -->
-        <!-- Se dibujan AL FINAL para quedar por encima -->
+        <!-- CONECTORES -->
+        <!-- SIN FLECHAS -->
         <!-- ================================================= -->
 
 
         <!-- TORQUE HÉLICES -->
-        <!-- Caja -> bifurcación -->
+        <!-- Un tronco corto que se divide en las dos líneas -->
 
         <polyline
             points="
-                230,430
-                270,430
-                270,285
+                220,435
+                255,435
+                255,285
                 135,285
             "
             class="line-neutral"
-            marker-end="url(#arrow-neutral)"
         />
 
         <polyline
             points="
-                270,430
-                270,650
+                255,435
+                255,650
                 135,650
             "
             class="line-neutral"
-            marker-end="url(#arrow-neutral)"
         />
 
         <circle
             cx="135"
             cy="285"
-            r="6"
+            r="5"
             fill="{MIST}"
         />
 
         <circle
             cx="135"
             cy="650"
-            r="6"
+            r="5"
             fill="{MIST}"
         />
 
 
-        <!-- ================================================= -->
         <!-- COMBUSTIÓN -->
-        <!-- Rodea completamente el título Turbina de gas -->
-        <!-- ================================================= -->
+        <!-- Solo un giro; pasa a la derecha del título -->
 
         <polyline
             points="
                 615,155
-                740,155
-                740,350
-                635,350
-                635,395
+                700,155
+                700,375
+                635,375
+                635,400
             "
             class="line-combustion"
-            marker-end="url(#arrow-combustion)"
         />
 
         <circle
             cx="635"
             cy="400"
-            r="6"
+            r="5"
             fill="{SIGNAL}"
         />
 
 
-        <!-- ================================================= -->
         <!-- GENERADOR DE GAS -->
-        <!-- ================================================= -->
+        <!-- Conexión corta -->
 
         <polyline
             points="
                 880,135
-                880,350
-                850,350
+                880,365
+                850,365
                 850,395
             "
             class="line-neutral"
-            marker-end="url(#arrow-neutral)"
         />
 
         <circle
             cx="850"
             cy="395"
-            r="6"
+            r="5"
             fill="{MIST}"
         />
 
 
-        <!-- ================================================= -->
         <!-- SALIDA COMPRESOR -->
-        <!-- ================================================= -->
+        <!-- Vertical y directa -->
 
-        <polyline
-            points="
-                445,755
-                445,590
-                445,515
-            "
+        <line
+            x1="445"
+            y1="755"
+            x2="445"
+            y2="510"
             class="line-compressor"
-            marker-end="url(#arrow-compressor)"
         />
 
         <circle
             cx="445"
             cy="510"
-            r="6"
+            r="5"
             fill="{comp_color}"
         />
 
 
-        <!-- ================================================= -->
         <!-- TURBINA / EJE -->
-        <!-- Muy visible y llega a la salida de la turbina -->
-        <!-- ================================================= -->
+        <!-- Vertical prácticamente directa -->
 
         <polyline
             points="
                 795,750
-                795,705
-                915,705
-                915,455
-                855,455
+                795,570
+                850,570
+                850,515
             "
             class="line-turbine"
-            marker-end="url(#arrow-turbine)"
         />
 
         <circle
             cx="850"
-            cy="455"
-            r="7"
+            cy="515"
+            r="5"
             fill="{turb_color}"
         />
 
 
-        <!-- ================================================= -->
         <!-- ESCAPE -->
-        <!-- ================================================= -->
+        <!-- Conexión corta hacia la salida de la turbina -->
 
         <polyline
             points="
-                1180,430
-                1100,430
-                1000,455
-                895,455
+                1165,405
+                1040,405
+                890,455
             "
             class="line-neutral"
-            marker-end="url(#arrow-neutral)"
         />
 
         <circle
             cx="890"
             cy="455"
-            r="6"
+            r="5"
             fill="{MIST}"
         />
 
 
-        <!-- ================================================= -->
         <!-- OPERACIÓN -->
-        <!-- Ahora sí llega claramente a la línea principal -->
-        <!-- ================================================= -->
+        <!-- Conexión sencilla al eje inferior -->
+        <!-- No se conecta al motor eléctrico -->
 
         <polyline
             points="
-                1375,450
-                1340,450
-                1340,340
-                1435,340
-                1435,285
-                1415,285
+                1370,555
+                1335,555
+                1335,650
             "
             class="line-neutral"
-            marker-end="url(#arrow-neutral)"
         />
 
         <circle
-            cx="1410"
-            cy="285"
-            r="7"
+            cx="1335"
+            cy="650"
+            r="5"
             fill="{MIST}"
         />
 
@@ -1186,6 +1100,6 @@ def esquema_planta(
 
     components.html(
         html,
-        height=930,
+        height=900,
         scrolling=False
     )
