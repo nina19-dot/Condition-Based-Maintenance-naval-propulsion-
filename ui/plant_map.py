@@ -33,85 +33,43 @@ def esquema_planta(
     if valores is None:
         valores = {}
 
+    # ========================================================
+    # COLORES SEGÚN COMPONENTE ANALIZADO
+    # ========================================================
 
     comp_color = (
         "#E5483F"
-        if componente in [
-            "compressor",
-            "both"
-        ]
+        if componente in ["compressor", "both"]
         else "#4E9FDB"
     )
 
-
     turb_color = (
         "#F59E0B"
-        if componente in [
-            "turbine",
-            "both"
-        ]
+        if componente in ["turbine", "both"]
         else "#9B5DE5"
     )
 
-
     # ========================================================
-    # TELEMETRÍA
+    # TELEMETRÍA QUE SÍ QUEREMOS MOSTRAR
     # ========================================================
 
-    lp = _fmt(
-        valores.get("lp"),
-        3
-    )
+    lp = _fmt(valores.get("lp"), 3)
+    v = _fmt(velocidad, 0)
 
-    v = _fmt(
-        velocidad,
-        0
-    )
+    t2 = _fmt(valores.get("T2"))
+    p2 = _fmt(valores.get("P2"))
 
-    t2 = _fmt(
-        valores.get("T2")
-    )
+    mf = _fmt(valores.get("mf"), 3)
+    tic = _fmt(valores.get("TIC"))
 
-    p2 = _fmt(
-        valores.get("P2")
-    )
+    t48 = _fmt(valores.get("T48"))
+    p48 = _fmt(valores.get("P48"))
 
-    mf = _fmt(
-        valores.get("mf"),
-        3
-    )
+    gtn = _fmt(valores.get("GTn"))
+    ggn = _fmt(valores.get("GGn"))
+    gtt = _fmt(valores.get("GTT"))
 
-    tic = _fmt(
-        valores.get("TIC")
-    )
-
-    t48 = _fmt(
-        valores.get("T48")
-    )
-
-    p48 = _fmt(
-        valores.get("P48")
-    )
-
-    gtt = _fmt(
-        valores.get("GTT")
-    )
-
-    gtn = _fmt(
-        valores.get("GTn")
-    )
-
-    ggn = _fmt(
-        valores.get("GGn")
-    )
-
-    pexh = _fmt(
-        valores.get("Pexh")
-    )
-
-    ts = _fmt(
-        valores.get("Ts")
-    )
+    pexh = _fmt(valores.get("Pexh"))
 
     kmc = (
         "-"
@@ -125,6 +83,9 @@ def esquema_planta(
         else f"{kMt:.4f}"
     )
 
+    # ========================================================
+    # SVG
+    # ========================================================
 
     html = f"""
     <html>
@@ -146,20 +107,25 @@ def esquema_planta(
             display: block;
         }}
 
-        .title {{
+        .section-label {{
+            fill: {MIST};
+            font-size: 18px;
+        }}
+
+        .box-title {{
             fill: {DIAL};
-            font-size: 17px;
+            font-size: 15px;
             font-weight: bold;
         }}
 
-        .text {{
+        .box-text {{
             fill: {MIST};
-            font-size: 14px;
+            font-size: 13px;
         }}
 
-        .value {{
+        .box-value {{
             fill: {BRASS};
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
         }}
 
@@ -172,78 +138,93 @@ def esquema_planta(
 
 
     <svg
-        viewBox="0 0 1400 680"
+        viewBox="0 0 1400 720"
         xmlns="http://www.w3.org/2000/svg"
     >
 
+        <defs>
 
-        <!-- ================================================ -->
-        <!-- EJES DE PROPULSIÓN -->
-        <!-- ================================================ -->
+            <filter id="shadow">
+                <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="6"
+                    flood-color="#000000"
+                    flood-opacity="0.25"
+                />
+            </filter>
+
+        </defs>
+
+
+        <!-- ================================================= -->
+        <!-- PROPULSIÓN SUPERIOR -->
+        <!-- ================================================= -->
 
         <line
-            x1="75"
-            y1="170"
-            x2="1280"
-            y2="170"
+            x1="70"
+            y1="155"
+            x2="1260"
+            y2="155"
             stroke="{DIAL}"
             stroke-width="8"
         />
 
-        <line
-            x1="75"
-            y1="510"
-            x2="1280"
-            y2="510"
-            stroke="{DIAL}"
-            stroke-width="8"
-        />
-
-
-        <!-- Hélices -->
-
         <ellipse
-            cx="55"
-            cy="170"
+            cx="48"
+            cy="155"
             rx="12"
-            ry="40"
-            fill="none"
-            stroke="{DIAL}"
-            stroke-width="6"
-        />
-
-        <ellipse
-            cx="55"
-            cy="510"
-            rx="12"
-            ry="40"
+            ry="42"
             fill="none"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
 
-        <!-- ================================================ -->
+        <!-- ================================================= -->
+        <!-- PROPULSIÓN INFERIOR -->
+        <!-- ================================================= -->
+
+        <line
+            x1="70"
+            y1="565"
+            x2="1260"
+            y2="565"
+            stroke="{DIAL}"
+            stroke-width="8"
+        />
+
+        <ellipse
+            cx="48"
+            cy="565"
+            rx="12"
+            ry="42"
+            fill="none"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+
+        <!-- ================================================= -->
         <!-- GENERADORES DIESEL -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
 
         <text
-            x="260"
-            y="48"
+            x="255"
+            y="40"
             text-anchor="middle"
-            fill="{MIST}"
-            font-size="19"
+            class="section-label"
         >
             Generadores diesel
         </text>
 
 
         <rect
-            x="160"
-            y="70"
-            width="200"
-            height="62"
-            rx="7"
+            x="145"
+            y="65"
+            width="220"
+            height="65"
+            rx="8"
             fill="#7138A8"
             stroke="{DIAL}"
             stroke-width="4"
@@ -251,11 +232,11 @@ def esquema_planta(
 
 
         <rect
-            x="160"
-            y="445"
-            width="200"
-            height="62"
-            rx="7"
+            x="145"
+            y="480"
+            width="220"
+            height="65"
+            rx="8"
             fill="#7138A8"
             stroke="{DIAL}"
             stroke-width="4"
@@ -263,52 +244,52 @@ def esquema_planta(
 
 
         <rect
-            x="160"
-            y="535"
-            width="200"
-            height="62"
-            rx="7"
+            x="145"
+            y="590"
+            width="220"
+            height="65"
+            rx="8"
             fill="#7138A8"
             stroke="{DIAL}"
             stroke-width="4"
         />
 
 
-        <!-- ================================================ -->
+        <!-- ================================================= -->
         <!-- TURBINA DE GAS -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
 
         <text
-            x="460"
-            y="250"
+            x="480"
+            y="260"
             text-anchor="middle"
-            fill="{MIST}"
-            font-size="21"
+            class="section-label"
         >
             Turbina de gas
         </text>
 
 
         <rect
-            x="220"
-            y="275"
-            width="500"
-            height="165"
-            rx="12"
+            x="210"
+            y="285"
+            width="545"
+            height="185"
+            rx="14"
             fill="{HULL}"
             stroke="{STEEL}"
             stroke-width="4"
+            filter="url(#shadow)"
         />
 
 
-        <!-- Compresor -->
+        <!-- COMPRESOR -->
 
         <polygon
             points="
-                245,310
-                415,330
-                415,385
-                245,405
+                240,325
+                430,348
+                430,407
+                240,430
             "
             fill="{comp_color}"
             stroke="{DIAL}"
@@ -316,27 +297,56 @@ def esquema_planta(
         />
 
 
-        <!-- Combustión -->
+        <line
+            x1="280"
+            y1="330"
+            x2="280"
+            y2="425"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="325"
+            y1="336"
+            x2="325"
+            y2="419"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="370"
+            y1="341"
+            x2="370"
+            y2="414"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
+        <!-- COMBUSTIÓN -->
 
         <rect
-            x="430"
-            y="315"
-            width="95"
-            height="85"
+            x="445"
+            y="325"
+            width="105"
+            height="105"
+            rx="5"
             fill="{SIGNAL}"
             stroke="{DIAL}"
             stroke-width="4"
         />
 
 
-        <!-- Turbina -->
+        <!-- TURBINA -->
 
         <polygon
             points="
-                545,330
-                680,305
-                680,410
-                545,385
+                575,345
+                720,320
+                720,435
+                575,410
             "
             fill="{turb_color}"
             stroke="{DIAL}"
@@ -344,9 +354,28 @@ def esquema_planta(
         />
 
 
+        <line
+            x1="610"
+            y1="339"
+            x2="610"
+            y2="416"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="655"
+            y1="331"
+            x2="655"
+            y2="424"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
         <text
-            x="330"
-            y="426"
+            x="335"
+            y="455"
             text-anchor="middle"
             fill="{DIAL}"
             font-size="15"
@@ -356,8 +385,8 @@ def esquema_planta(
 
 
         <text
-            x="477"
-            y="426"
+            x="497"
+            y="455"
             text-anchor="middle"
             fill="{DIAL}"
             font-size="15"
@@ -367,8 +396,8 @@ def esquema_planta(
 
 
         <text
-            x="610"
-            y="426"
+            x="650"
+            y="455"
             text-anchor="middle"
             fill="{DIAL}"
             font-size="15"
@@ -377,63 +406,75 @@ def esquema_planta(
         </text>
 
 
-        <!-- ================================================ -->
+        <!-- ================================================= -->
         <!-- EMBRAGUES -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
 
         <circle
-            cx="780"
-            cy="290"
-            r="27"
+            cx="820"
+            cy="295"
+            r="28"
             fill="{HULL}"
             stroke="{SIGNAL}"
             stroke-width="6"
         />
 
         <circle
-            cx="780"
-            cy="455"
-            r="27"
+            cx="820"
+            cy="495"
+            r="28"
             fill="{HULL}"
             stroke="{SIGNAL}"
             stroke-width="6"
         />
 
 
-        <!-- ================================================ -->
+        <!-- ================================================= -->
         <!-- CAJAS -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
 
         <rect
-            x="880"
-            y="100"
-            width="58"
-            height="185"
+            x="930"
+            y="85"
+            width="65"
+            height="195"
+            rx="4"
+            fill="{SEA}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+        <rect
+            x="930"
+            y="470"
+            width="65"
+            height="195"
+            rx="4"
             fill="{SEA}"
             stroke="{DIAL}"
             stroke-width="4"
         />
 
 
-        <rect
-            x="880"
-            y="420"
-            width="58"
-            height="185"
-            fill="{SEA}"
-            stroke="{DIAL}"
-            stroke-width="4"
-        />
-
-
-        <!-- ================================================ -->
+        <!-- ================================================= -->
         <!-- MOTORES ELÉCTRICOS -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
 
         <rect
-            x="1035"
-            y="105"
-            width="145"
+            x="1070"
+            y="95"
+            width="155"
+            height="90"
+            rx="7"
+            fill="{BRASS}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+        <rect
+            x="1070"
+            y="520"
+            width="155"
             height="90"
             rx="7"
             fill="{BRASS}"
@@ -442,350 +483,397 @@ def esquema_planta(
         />
 
 
-        <rect
-            x="1035"
-            y="475"
-            width="145"
-            height="90"
-            rx="7"
-            fill="{BRASS}"
-            stroke="{DIAL}"
-            stroke-width="4"
-        />
-
-
-        <!-- ================================================ -->
-        <!-- CONEXIONES TURBINA -->
-        <!-- ================================================ -->
+        <!-- ================================================= -->
+        <!-- CONEXIONES DE TURBINA -->
+        <!-- ================================================= -->
 
         <line
-            x1="720"
-            y1="355"
-            x2="753"
-            y2="290"
+            x1="755"
+            y1="375"
+            x2="792"
+            y2="295"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+        <line
+            x1="755"
+            y1="375"
+            x2="792"
+            y2="495"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+        <line
+            x1="848"
+            y1="295"
+            x2="930"
+            y2="185"
+            stroke="{DIAL}"
+            stroke-width="6"
+        />
+
+        <line
+            x1="848"
+            y1="495"
+            x2="930"
+            y2="565"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
 
+        <!-- ================================================= -->
+        <!-- TELEMETRÍA LOCALIZADA -->
+        <!-- ================================================= -->
+
+
+        <!-- OPERACIÓN -->
+
+        <g filter="url(#shadow)">
+
+            <rect
+                x="20"
+                y="300"
+                width="160"
+                height="95"
+                rx="8"
+                fill="{HULL}"
+                stroke="{STEEL}"
+                stroke-width="2"
+            />
+
+            <text
+                x="35"
+                y="328"
+                class="box-title"
+            >
+                Operación
+            </text>
+
+            <text
+                x="35"
+                y="355"
+                class="box-text"
+            >
+                lp = {lp}
+            </text>
+
+            <text
+                x="35"
+                y="380"
+                class="box-text"
+            >
+                v = {v} knots
+            </text>
+
+        </g>
+
+
+        <!-- Línea hacia planta -->
+
         <line
-            x1="720"
-            y1="355"
-            x2="753"
-            y2="455"
-            stroke="{DIAL}"
-            stroke-width="6"
-        />
-
-
-        <line
-            x1="807"
-            y1="290"
-            x2="880"
-            y2="195"
-            stroke="{DIAL}"
-            stroke-width="6"
-        />
-
-
-        <line
-            x1="807"
-            y1="455"
-            x2="880"
-            y2="510"
-            stroke="{DIAL}"
-            stroke-width="6"
-        />
-
-
-        <!-- ================================================ -->
-        <!-- TELEMETRÍA LOCAL -->
-        <!-- ================================================ -->
-
-
-        <!-- Condición operacional -->
-
-        <rect
-            x="45"
-            y="280"
-            width="145"
-            height="85"
-            rx="7"
-            fill="{HULL}"
+            x1="180"
+            y1="350"
+            x2="210"
+            y2="350"
             stroke="{STEEL}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
 
-        <text
-            x="60"
-            y="305"
-            class="title"
-        >
-            Operación
-        </text>
 
-        <text
-            x="60"
-            y="330"
-            class="text"
-        >
-            lp = {lp}
-        </text>
+        <!-- COMPRESOR -->
 
-        <text
-            x="60"
-            y="352"
-            class="text"
-        >
-            v = {v} knots
-        </text>
+        <g filter="url(#shadow)">
+
+            <rect
+                x="225"
+                y="505"
+                width="210"
+                height="115"
+                rx="8"
+                fill="{HULL}"
+                stroke="{comp_color}"
+                stroke-width="2"
+            />
+
+            <text
+                x="240"
+                y="532"
+                class="box-title"
+            >
+                Salida compresor
+            </text>
+
+            <text
+                x="240"
+                y="558"
+                class="box-text"
+            >
+                T2 = {t2} °C
+            </text>
+
+            <text
+                x="240"
+                y="582"
+                class="box-text"
+            >
+                P2 = {p2} bar
+            </text>
+
+            <text
+                x="240"
+                y="607"
+                class="box-value"
+            >
+                kMc = {kmc}
+            </text>
+
+        </g>
 
 
-        <!-- Compresor -->
-
-        <rect
-            x="225"
-            y="475"
-            width="205"
-            height="115"
-            rx="7"
-            fill="{HULL}"
+        <line
+            x1="335"
+            y1="505"
+            x2="335"
+            y2="470"
             stroke="{comp_color}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
 
-        <text
-            x="240"
-            y="502"
-            class="title"
-        >
-            Compresor
-        </text>
 
-        <text
-            x="240"
-            y="528"
-            class="text"
-        >
-            T2 = {t2} °C
-        </text>
+        <!-- COMBUSTIÓN -->
 
-        <text
-            x="240"
-            y="551"
-            class="text"
-        >
-            P2 = {p2} bar
-        </text>
+        <g filter="url(#shadow)">
 
-        <text
-            x="240"
-            y="576"
-            class="value"
-        >
-            kMc = {kmc}
-        </text>
+            <rect
+                x="430"
+                y="160"
+                width="185"
+                height="100"
+                rx="8"
+                fill="{HULL}"
+                stroke="{SIGNAL}"
+                stroke-width="2"
+            />
+
+            <text
+                x="445"
+                y="188"
+                class="box-title"
+            >
+                Combustión
+            </text>
+
+            <text
+                x="445"
+                y="215"
+                class="box-text"
+            >
+                mf = {mf} kg/s
+            </text>
+
+            <text
+                x="445"
+                y="240"
+                class="box-text"
+            >
+                TIC = {tic} %
+            </text>
+
+        </g>
 
 
-        <!-- Combustión -->
-
-        <rect
-            x="450"
-            y="475"
-            width="180"
-            height="92"
-            rx="7"
-            fill="{HULL}"
+        <line
+            x1="500"
+            y1="260"
+            x2="500"
+            y2="325"
             stroke="{SIGNAL}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
 
-        <text
-            x="465"
-            y="502"
-            class="title"
-        >
-            Combustión
-        </text>
 
-        <text
-            x="465"
-            y="528"
-            class="text"
-        >
-            mf = {mf} kg/s
-        </text>
+        <!-- TURBINA HP -->
 
-        <text
-            x="465"
-            y="551"
-            class="text"
-        >
-            TIC = {tic} %
-        </text>
+        <g filter="url(#shadow)">
+
+            <rect
+                x="570"
+                y="510"
+                width="205"
+                height="115"
+                rx="8"
+                fill="{HULL}"
+                stroke="{turb_color}"
+                stroke-width="2"
+            />
+
+            <text
+                x="585"
+                y="537"
+                class="box-title"
+            >
+                Turbina HP
+            </text>
+
+            <text
+                x="585"
+                y="563"
+                class="box-text"
+            >
+                T48 = {t48} °C
+            </text>
+
+            <text
+                x="585"
+                y="587"
+                class="box-text"
+            >
+                P48 = {p48} bar
+            </text>
+
+            <text
+                x="585"
+                y="612"
+                class="box-value"
+            >
+                kMt = {kmt}
+            </text>
+
+        </g>
 
 
-        <!-- Turbina HP -->
-
-        <rect
-            x="650"
-            y="480"
-            width="200"
-            height="115"
-            rx="7"
-            fill="{HULL}"
+        <line
+            x1="650"
+            y1="510"
+            x2="650"
+            y2="470"
             stroke="{turb_color}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
 
-        <text
-            x="665"
-            y="507"
-            class="title"
-        >
-            Turbina HP
-        </text>
 
-        <text
-            x="665"
-            y="533"
-            class="text"
-        >
-            T48 = {t48} °C
-        </text>
+        <!-- GAS GENERATOR / SHAFT -->
 
-        <text
-            x="665"
-            y="556"
-            class="text"
-        >
-            P48 = {p48} bar
-        </text>
+        <g filter="url(#shadow)">
 
-        <text
-            x="665"
-            y="581"
-            class="value"
-        >
-            kMt = {kmt}
-        </text>
+            <rect
+                x="680"
+                y="135"
+                width="210"
+                height="115"
+                rx="8"
+                fill="{HULL}"
+                stroke="{STEEL}"
+                stroke-width="2"
+            />
+
+            <text
+                x="695"
+                y="162"
+                class="box-title"
+            >
+                Eje / generador
+            </text>
+
+            <text
+                x="695"
+                y="188"
+                class="box-text"
+            >
+                GGn = {ggn} rpm
+            </text>
+
+            <text
+                x="695"
+                y="212"
+                class="box-text"
+            >
+                GTn = {gtn} rpm
+            </text>
+
+            <text
+                x="695"
+                y="236"
+                class="box-text"
+            >
+                GTT = {gtt} kN m
+            </text>
+
+        </g>
 
 
-        <!-- Eje turbina / generador -->
-
-        <rect
-            x="730"
-            y="80"
-            width="205"
-            height="105"
-            rx="7"
-            fill="{HULL}"
+        <line
+            x1="760"
+            y1="250"
+            x2="760"
+            y2="320"
             stroke="{STEEL}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
 
-        <text
-            x="745"
-            y="107"
-            class="title"
-        >
-            Eje / generador
-        </text>
 
-        <text
-            x="745"
-            y="132"
-            class="text"
-        >
-            GTn = {gtn} rpm
-        </text>
+        <!-- ESCAPE -->
 
-        <text
-            x="745"
-            y="154"
-            class="text"
-        >
-            GGn = {ggn} rpm
-        </text>
+        <g filter="url(#shadow)">
 
-        <text
-            x="745"
-            y="176"
-            class="text"
-        >
-            GTT = {gtt} kN m
-        </text>
+            <rect
+                x="790"
+                y="370"
+                width="165"
+                height="72"
+                rx="8"
+                fill="{HULL}"
+                stroke="{STEEL}"
+                stroke-width="2"
+            />
+
+            <text
+                x="805"
+                y="398"
+                class="box-title"
+            >
+                Escape
+            </text>
+
+            <text
+                x="805"
+                y="425"
+                class="box-text"
+            >
+                Pexh = {pexh} bar
+            </text>
+
+        </g>
 
 
-        <!-- Escape -->
-
-        <rect
-            x="725"
-            y="205"
-            width="155"
-            height="60"
-            rx="7"
-            fill="{HULL}"
+        <line
+            x1="790"
+            y1="405"
+            x2="720"
+            y2="405"
             stroke="{STEEL}"
             stroke-width="2"
+            stroke-dasharray="5 4"
         />
-
-        <text
-            x="740"
-            y="231"
-            class="title"
-        >
-            Escape
-        </text>
-
-        <text
-            x="740"
-            y="253"
-            class="text"
-        >
-            Pexh = {pexh} bar
-        </text>
-
-
-        <!-- Torque hélice estribor -->
-
-        <rect
-            x="1190"
-            y="95"
-            width="160"
-            height="70"
-            rx="7"
-            fill="{HULL}"
-            stroke="{STEEL}"
-            stroke-width="2"
-        />
-
-        <text
-            x="1205"
-            y="122"
-            class="title"
-        >
-            Hélice estribor
-        </text>
-
-        <text
-            x="1205"
-            y="148"
-            class="text"
-        >
-            Ts = {ts} kN m
-        </text>
 
 
     </svg>
 
     </body>
+
     </html>
     """
 
-
     components.html(
         html,
-        height=680,
+        height=720,
         scrolling=False
     )
