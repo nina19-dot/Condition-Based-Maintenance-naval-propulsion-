@@ -1,223 +1,92 @@
+# main.py
+
 import streamlit as st
-
+from styles import load_css
 from data_utils import cargar_datos
-
-from model_utils import (
-    entrenar_modelos,
-    crear_observacion,
-    predecir_coeficientes
-)
-
-from ui.telemetry import (
-    panel_telemetria
-)
-
-from ui.plant_map import (
-    mostrar_planta
-)
-
-from ui.results import (
-    bloque_compresor,
-    bloque_turbina
-)
-
-
-# =============================
-# CONFIGURACIÓN STREAMLIT
-# =============================
+from model_utils import entrenar_modelos, crear_observacion, predecir_coeficientes
+from ui.plant_map import render_plant_map
+from ui.telemetry import panel_telemetria
+from ui.results import component_card
 
 st.set_page_config(
-    page_title='Naval CBM',
-    page_icon='⚙️',
-    layout='wide'
+    page_title="Naval Condition-Based Maintenance",
+    page_icon="⚙️",
+    layout="wide"
 )
 
+load_css()
 
-# =============================
-# VARIABLES DE SESIÓN
-# =============================
-
-if 'kMc' not in st.session_state:
+if "kMc" not in st.session_state:
     st.session_state.kMc = None
-
-if 'kMt' not in st.session_state:
+if "kMt" not in st.session_state:
     st.session_state.kMt = None
+if "active_component" not in st.session_state:
+    st.session_state.active_component = None
 
-if 'componente' not in st.session_state:
-    st.session_state.componente = None
-
-
-# =============================
-# TÍTULO
-# =============================
-
-st.title(
-    'Condition-Based Maintenance '
-    'for Naval Propulsion'
+st.markdown('<div class="app-title">Condition-Based Maintenance for Naval Propulsion</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="app-subtitle">Estimación del nivel de degradación del compresor y la turbina mediante Random Forest.</div>',
+    unsafe_allow_html=True
 )
-
-st.caption(
-    'Estimación del estado de '
-    'degradación del compresor '
-    'y la turbina mediante '
-    'Random Forest.'
-)
-
-
-# =============================
-# CARGAR DATOS
-# =============================
 
 data = cargar_datos()
+rf_kMc, rf_kMt = entrenar_modelos(data)
 
+# Fila principal
+left, right = st.columns([1.55, 1.0], gap="large")
 
-# =============================
-# ENTRENAR MODELOS
-# =============================
+with left:
+    render_plant_map(st.session_state.active_component)
 
-with st.spinner(
-    'Inicializando modelos...'
-):
+with right:
+    st.markdown('<div class="section-title">Panel de operación</div>', unsafe_allow_html=True)
+    velocidad, valores = panel_telemetria(data)
 
-    rf_kMc, rf_kMt = (
-        entrenar_modelos(data)
+observacion = crear_observacion(velocidad, valores)
+
+st.markdown("### Acciones")
+b1, b2, b3 = st.columns(3)
+
+with b1:
+    if st.button("Estimar kMc", use_container_width=True):
+        st.session_state.kMc = rf_kMc.predict(observacion)[0]
+        st.session_state.active_component = "compressor"
+        st.rerun()
+
+with b2:
+    if st.button("Estimar kMt", use_container_width=True):
+        st.session_state.kMt = rf_kMt.predict(observacion)[0]
+        st.session_state.active_component = "turbine"
+        st.rerun()
+
+with b3:
+    if st.button("Estimar ambos", use_container_width=True):
+        pred_kMc, pred_kMt = predecir_coeficientes(rf_kMc, rf_kMt, observacion)
+        st.session_state.kMc = pred_kMc
+        st.session_state.kMt = pred_kMt
+        st.session_state.active_component = "both"
+        st.rerun()
+
+st.markdown("---")
+
+c1, c2 = st.columns(2, gap="large")
+
+with c1:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    component_card(
+        title="Compresor",
+        image_path="assets/compressor.png",
+        coef_value=st.session_state.kMc,
+        target_type="kMc"
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-
-# =============================
-# MAPA CODLAG
-# =============================
-
-mostrar_planta(
-    st.session_state.componente
-)
-
-
-st.divider()
-
-
-# =============================
-# TELEMETRÍA
-# =============================
-
-velocidad, valores = (
-    panel_telemetria(data)
-)
-
-
-# Crear observación para modelo
-observacion = crear_observacion(
-    velocidad,
-    valores
-)
-
-
-st.divider()
-
-
-# =============================
-# BOTONES
-# =============================
-
-col1, col2, col3 = st.columns(3)
-
-
-with col1:
-
-    calcular_kMc = st.button(
-        'Estimar kMc',
-        use_container_width=True
+with c2:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    component_card(
+        title="Turbina",
+        image_path="assets/turbine.png",
+        coef_value=st.session_state.kMt,
+        target_type="kMt"
     )
-
-
-with col2:
-
-    calcular_kMt = st.button(
-        'Estimar kMt',
-        use_container_width=True
-    )
-
-
-with col3:
-
-    calcular_ambos = st.button(
-        'Estimar ambos',
-        use_container_width=True
-    )
-
-
-# =============================
-# PREDICCIONES
-# =============================
-
-if calcular_kMc:
-
-    pred_kMc = rf_kMc.predict(
-        observacion
-    )[0]
-
-    st.session_state.kMc = pred_kMc
-    st.session_state.componente = (
-        'compressor'
-    )
-
-    st.rerun()
-
-
-if calcular_kMt:
-
-    pred_kMt = rf_kMt.predict(
-        observacion
-    )[0]
-
-    st.session_state.kMt = pred_kMt
-    st.session_state.componente = (
-        'turbine'
-    )
-
-    st.rerun()
-
-
-if calcular_ambos:
-
-    pred_kMc, pred_kMt = (
-        predecir_coeficientes(
-            rf_kMc,
-            rf_kMt,
-            observacion
-        )
-    )
-
-    st.session_state.kMc = pred_kMc
-    st.session_state.kMt = pred_kMt
-    st.session_state.componente = (
-        'both'
-    )
-
-    st.rerun()
-
-
-st.divider()
-
-
-# =============================
-# RESULTADOS
-# =============================
-
-col_compresor, col_turbina = (
-    st.columns(2)
-)
-
-
-with col_compresor:
-
-    bloque_compresor(
-        st.session_state.kMc
-    )
-
-
-with col_turbina:
-
-    bloque_turbina(
-        st.session_state.kMt
-    )
+    st.markdown('</div>', unsafe_allow_html=True)
