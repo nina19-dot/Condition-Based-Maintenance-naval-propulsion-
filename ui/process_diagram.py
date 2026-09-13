@@ -1,44 +1,109 @@
+# ui/process_diagram.py
+
 import streamlit.components.v1 as components
 
-from config import INK, HULL, DIAL, MIST, SIGNAL, STEEL
+from config import (
+    INK,
+    HULL,
+    DIAL,
+    BRASS,
+    SIGNAL,
+    MIST,
+    STEEL
+)
 
+
+# ============================================================
+# FORMATO DE VALORES
+# ============================================================
 
 def _fmt(valor, dec=2):
+
     if valor is None:
         return "-"
+
     return f"{valor:.{dec}f}"
 
 
-def diagrama_proceso_turbina(valores=None):
+# ============================================================
+# DIAGRAMA DEL PROCESO DE LA TURBINA DE GAS
+# ============================================================
+
+def diagrama_proceso(
+    valores,
+    velocidad=None,
+    kMc=None,
+    kMt=None
+):
+
     if valores is None:
         valores = {}
 
-    # =========================
-    # Variables
-    # =========================
-    t1 = _fmt(valores.get("T1"))
-    t2 = _fmt(valores.get("T2"))
-    p2 = _fmt(valores.get("P2"))
-    mf = _fmt(valores.get("mf"), 3)
-    tic = _fmt(valores.get("TIC"))
-    t48 = _fmt(valores.get("T48"))
-    p48 = _fmt(valores.get("P48"))
-    pexh = _fmt(valores.get("Pexh"))
-    ggn = _fmt(valores.get("GGn"))
-    gtn = _fmt(valores.get("GTn"))
-    gtt = _fmt(valores.get("GTT"))
-    lp = _fmt(valores.get("lp"), 3)
-    v = _fmt(valores.get("v"), 0)
+    # ========================================================
+    # VARIABLES
+    # ========================================================
 
-    azul_aire = "#4E9FDB"
-    rojo_gases = "#E5483F"
-    naranja_turbina = "#F59E0B"
-    rosa_borde = "#D16BA5"
+    t2 = _fmt(
+        valores.get("T2")
+    )
+
+    p2 = _fmt(
+        valores.get("P2")
+    )
+
+    mf = _fmt(
+        valores.get("mf"),
+        3
+    )
+
+    tic = _fmt(
+        valores.get("TIC")
+    )
+
+    t48 = _fmt(
+        valores.get("T48")
+    )
+
+    p48 = _fmt(
+        valores.get("P48")
+    )
+
+    pexh = _fmt(
+        valores.get("Pexh")
+    )
+
+    kmc = (
+        "-"
+        if kMc is None
+        else f"{kMc:.4f}"
+    )
+
+    kmt = (
+        "-"
+        if kMt is None
+        else f"{kMt:.4f}"
+    )
+
+    # ========================================================
+    # COLORES ESPECÍFICOS
+    # ========================================================
+
+    BLUE = "#4E9FDB"
+    HOT = "#C0402C"
+    TURBINE = "#F59E0B"
+    PINK = "#D16BA5"
+
+    # ========================================================
+    # HTML + SVG
+    # ========================================================
 
     html = f"""
     <html>
+
     <head>
+
     <style>
+
         body {{
             margin: 0;
             padding: 0;
@@ -52,175 +117,661 @@ def diagrama_proceso_turbina(valores=None):
             display: block;
         }}
 
-        .titulo {{
+        .stage-title {{
             fill: {DIAL};
-            font-size: 24px;
+            font-size: 21px;
             font-weight: 800;
         }}
 
-        .subtitulo {{
-            fill: {DIAL};
-            font-size: 17px;
-            font-weight: 700;
-        }}
-
-        .texto {{
+        .stage-subtitle {{
             fill: {MIST};
             font-size: 14px;
+            font-weight: 600;
         }}
 
-        .texto-azul {{
-            fill: {azul_aire};
-            font-size: 15px;
-            font-weight: 700;
+        .sensor-blue {{
+            fill: {BLUE};
+            font-size: 17px;
+            font-weight: 800;
         }}
 
-        .caja-titulo {{
+        .box-title {{
             fill: {DIAL};
             font-size: 16px;
             font-weight: 700;
         }}
 
-        .caja-texto {{
+        .box-text {{
             fill: {MIST};
             font-size: 14px;
         }}
+
+        .box-value {{
+            fill: {BRASS};
+            font-size: 14px;
+            font-weight: 700;
+        }}
+
     </style>
+
     </head>
 
     <body>
-    <svg viewBox="0 0 1400 520" xmlns="http://www.w3.org/2000/svg">
+
+
+    <svg
+        viewBox="0 0 1400 570"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+
+        <!-- ================================================= -->
+        <!-- DEFINICIONES -->
+        <!-- ================================================= -->
 
         <defs>
+
+            <linearGradient
+                id="compressorGradient"
+                x1="0%"
+                x2="100%"
+            >
+
+                <stop
+                    offset="0%"
+                    stop-color="#68B7E8"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="#367EAE"
+                />
+
+            </linearGradient>
+
+
+            <linearGradient
+                id="turbineGradient"
+                x1="0%"
+                x2="100%"
+            >
+
+                <stop
+                    offset="0%"
+                    stop-color="#F6AF28"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="#CE7913"
+                />
+
+            </linearGradient>
+
+
             <filter id="shadow">
-                <feDropShadow dx="0" dy="4" stdDeviation="6"
-                    flood-color="#000000" flood-opacity="0.25"/>
+
+                <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="6"
+                    flood-color="#000000"
+                    flood-opacity="0.25"
+                />
+
             </filter>
+
         </defs>
 
-        <!-- ====================================== -->
-        <!-- TÍTULOS DE ETAPAS -->
-        <!-- ====================================== -->
 
-        <text x="100" y="430" text-anchor="middle" class="titulo">Admisión</text>
-        <text x="340" y="430" text-anchor="middle" class="titulo">Compresor</text>
-        <text x="700" y="430" text-anchor="middle" class="titulo">Cámara de combustión</text>
-        <text x="980" y="430" text-anchor="middle" class="titulo">Turbina</text>
-        <text x="1260" y="430" text-anchor="middle" class="titulo">Escape</text>
-
-        <!-- ====================================== -->
-        <!-- FLUJO DE ADMISIÓN -->
-        <!-- ====================================== -->
-
-        <line x1="20" y1="210" x2="200" y2="210" stroke="{azul_aire}" stroke-width="4"/>
-        <line x1="20" y1="240" x2="200" y2="240" stroke="{azul_aire}" stroke-width="4"/>
-        <line x1="20" y1="270" x2="200" y2="270" stroke="{azul_aire}" stroke-width="4"/>
-        <line x1="20" y1="300" x2="200" y2="300" stroke="{azul_aire}" stroke-width="4"/>
-
-        <!-- Solo T1 y T2, sin recuadro -->
-        <text x="80" y="185" class="texto-azul">T1 = {t1} °C</text>
-        <text x="190" y="340" class="texto-azul">T2 = {t2} °C</text>
-
-        <!-- ====================================== -->
-        <!-- COMPRESOR -->
-        <!-- ====================================== -->
+        <!-- ================================================= -->
+        <!-- ADMISIÓN -->
+        <!-- ================================================= -->
 
         <polygon
-            points="210,190 420,215 420,295 210,320"
-            fill="{azul_aire}"
-            stroke="{DIAL}"
-            stroke-width="4"
+            points="
+                20,105
+                185,145
+                185,255
+                20,295
+            "
+            fill="#142F33"
+            stroke="{MIST}"
+            stroke-width="3"
         />
 
-        <line x1="275" y1="202" x2="275" y2="308" stroke="{INK}" stroke-width="7"/>
-        <line x1="340" y1="210" x2="340" y2="300" stroke="{INK}" stroke-width="7"/>
 
-        <text x="315" y="365" text-anchor="middle" class="subtitulo">Compresor</text>
-        <text x="315" y="390" text-anchor="middle" class="texto">P2 = {p2} bar</text>
+        <!-- Líneas de flujo de aire -->
 
-        <!-- ====================================== -->
+        <path
+            d="M35 145 C90 145 130 155 175 170"
+            fill="none"
+            stroke="{BLUE}"
+            stroke-width="5"
+        />
+
+        <path
+            d="M35 200 C95 200 130 200 175 200"
+            fill="none"
+            stroke="{BLUE}"
+            stroke-width="5"
+        />
+
+        <path
+            d="M35 255 C90 255 130 245 175 230"
+            fill="none"
+            stroke="{BLUE}"
+            stroke-width="5"
+        />
+
+
+        <!-- Solo nombres T1 y T2 -->
+        <!-- Sin valores y sin recuadro -->
+
+        <text
+            x="65"
+            y="130"
+            class="sensor-blue"
+        >
+            T1
+        </text>
+
+        <text
+            x="150"
+            y="275"
+            class="sensor-blue"
+        >
+            T2
+        </text>
+
+
+        <!-- ================================================= -->
+        <!-- COMPRESOR -->
+        <!-- ================================================= -->
+
+        <polygon
+            points="
+                185,120
+                440,155
+                440,245
+                185,280
+            "
+            fill="url(#compressorGradient)"
+            stroke="{DIAL}"
+            stroke-width="4"
+            filter="url(#shadow)"
+        />
+
+
+        <!-- Álabes -->
+
+        <line
+            x1="235"
+            y1="126"
+            x2="235"
+            y2="274"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="290"
+            y1="134"
+            x2="290"
+            y2="266"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="345"
+            y1="142"
+            x2="345"
+            y2="258"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="400"
+            y1="150"
+            x2="400"
+            y2="250"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+
+        <!-- ================================================= -->
         <!-- CÁMARA DE COMBUSTIÓN -->
-        <!-- ====================================== -->
+        <!-- ================================================= -->
 
         <rect
-            x="560" y="190" width="140" height="130" rx="8"
-            fill="{SIGNAL}" stroke="{DIAL}" stroke-width="4"
-        />
-
-        <text x="630" y="365" text-anchor="middle" class="subtitulo">Combustión</text>
-        <text x="630" y="390" text-anchor="middle" class="texto">mf = {mf} kg/s | TIC = {tic} %</text>
-
-        <!-- ====================================== -->
-        <!-- TURBINA -->
-        <!-- ====================================== -->
-
-        <polygon
-            points="820,205 1040,180 1040,330 820,305"
-            fill="{naranja_turbina}"
+            x="455"
+            y="120"
+            width="285"
+            height="160"
+            rx="10"
+            fill="{HULL}"
             stroke="{DIAL}"
             stroke-width="4"
+            filter="url(#shadow)"
         />
 
-        <line x1="900" y1="195" x2="900" y2="315" stroke="{INK}" stroke-width="7"/>
-        <line x1="970" y1="188" x2="970" y2="322" stroke="{INK}" stroke-width="7"/>
 
-        <text x="930" y="365" text-anchor="middle" class="subtitulo">Turbina</text>
-        <text x="930" y="388" text-anchor="middle" class="texto">Salida turbina HP</text>
-        <text x="930" y="410" text-anchor="middle" class="texto">T48 = {t48} °C | P48 = {p48} bar</text>
+        <rect
+            x="505"
+            y="150"
+            width="180"
+            height="100"
+            rx="12"
+            fill="#334D51"
+            stroke="{MIST}"
+            stroke-width="2"
+        />
 
-        <!-- ====================================== -->
-        <!-- ESCAPE / GASES -->
-        <!-- ====================================== -->
 
-        <line x1="1050" y1="205" x2="1370" y2="185" stroke="{rojo_gases}" stroke-width="4"/>
-        <line x1="1050" y1="240" x2="1370" y2="230" stroke="{rojo_gases}" stroke-width="4"/>
-        <line x1="1050" y1="280" x2="1370" y2="290" stroke="{rojo_gases}" stroke-width="4"/>
-        <line x1="1050" y1="315" x2="1370" y2="345" stroke="{rojo_gases}" stroke-width="4"/>
+        <!-- Gases calientes -->
 
-        <!-- ====================================== -->
-        <!-- RECUADROS DE TELEMETRÍA -->
-        <!-- ====================================== -->
+        <polygon
+            points="
+                515,190
+                625,190
+                680,200
+                625,210
+                515,210
+            "
+            fill="{HOT}"
+        />
 
-        <!-- Operación -->
+
+        <!-- Llama -->
+
+        <polygon
+            points="
+                510,200
+                545,170
+                535,194
+                572,200
+                535,207
+                545,235
+            "
+            fill="#FFC94A"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- TURBINA -->
+        <!-- ================================================= -->
+
+        <polygon
+            points="
+                765,155
+                970,115
+                970,285
+                765,245
+            "
+            fill="url(#turbineGradient)"
+            stroke="{DIAL}"
+            stroke-width="4"
+            filter="url(#shadow)"
+        />
+
+
+        <!-- Álabes -->
+
+        <line
+            x1="805"
+            y1="147"
+            x2="805"
+            y2="253"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="855"
+            y1="137"
+            x2="855"
+            y2="263"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="905"
+            y1="128"
+            x2="905"
+            y2="272"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+        <line
+            x1="945"
+            y1="120"
+            x2="945"
+            y2="280"
+            stroke="{INK}"
+            stroke-width="8"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- ESCAPE -->
+        <!-- ================================================= -->
+
+        <polygon
+            points="
+                970,115
+                1380,65
+                1380,335
+                970,285
+            "
+            fill="#142F33"
+            stroke="{MIST}"
+            stroke-width="3"
+        />
+
+
+        <!-- Flujo de gases -->
+
+        <path
+            d="M990 160 C1090 145 1210 125 1360 120"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="5"
+        />
+
+        <path
+            d="M990 200 C1110 200 1230 200 1360 200"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="5"
+        />
+
+        <path
+            d="M990 240 C1090 255 1210 275 1360 280"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="5"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- EJE -->
+        <!-- ================================================= -->
+
+        <line
+            x1="185"
+            y1="200"
+            x2="970"
+            y2="200"
+            stroke="#D8D8D8"
+            stroke-width="8"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- NOMBRES PRINCIPALES -->
+        <!-- ================================================= -->
+
+        <text
+            x="100"
+            y="365"
+            text-anchor="middle"
+            class="stage-title"
+        >
+            Admisión
+        </text>
+
+
+        <text
+            x="315"
+            y="365"
+            text-anchor="middle"
+            class="stage-title"
+        >
+            Compresor
+        </text>
+
+
+        <text
+            x="595"
+            y="365"
+            text-anchor="middle"
+            class="stage-title"
+        >
+            Cámara de combustión
+        </text>
+
+
+        <text
+            x="865"
+            y="365"
+            text-anchor="middle"
+            class="stage-title"
+        >
+            Turbina
+        </text>
+
+
+        <!-- Salida turbina HP debajo de Turbina -->
+
+        <text
+            x="865"
+            y="392"
+            text-anchor="middle"
+            class="stage-subtitle"
+        >
+            Salida turbina HP
+        </text>
+
+
+        <text
+            x="1180"
+            y="365"
+            text-anchor="middle"
+            class="stage-title"
+        >
+            Escape
+        </text>
+
+
+        <!-- ================================================= -->
+        <!-- TELEMETRÍA COMPRESOR -->
+        <!-- ================================================= -->
+
         <g filter="url(#shadow)">
+
             <rect
-                x="30" y="25" width="180" height="95" rx="10"
-                fill="{HULL}" stroke="{rosa_borde}" stroke-width="3"
+                x="235"
+                y="420"
+                width="225"
+                height="125"
+                rx="10"
+                fill="{HULL}"
+                stroke="{BLUE}"
+                stroke-width="2"
             />
-            <text x="50" y="55" class="caja-titulo">Operación</text>
-            <text x="50" y="82" class="caja-texto">lp = {lp}</text>
-            <text x="50" y="106" class="caja-texto">v = {v} knots</text>
+
+            <text
+                x="253"
+                y="452"
+                class="box-title"
+            >
+                Salida compresor
+            </text>
+
+            <text
+                x="253"
+                y="482"
+                class="box-text"
+            >
+                T2 = {t2} °C
+            </text>
+
+            <text
+                x="253"
+                y="510"
+                class="box-text"
+            >
+                P2 = {p2} bar
+            </text>
+
+            <text
+                x="253"
+                y="535"
+                class="box-value"
+            >
+                kMc = {kmc}
+            </text>
+
         </g>
 
-        <!-- Eje / generador -->
+
+        <!-- ================================================= -->
+        <!-- TELEMETRÍA COMBUSTIÓN -->
+        <!-- ================================================= -->
+
         <g filter="url(#shadow)">
+
             <rect
-                x="830" y="20" width="230" height="110" rx="10"
-                fill="{HULL}" stroke="{rosa_borde}" stroke-width="3"
+                x="485"
+                y="420"
+                width="220"
+                height="105"
+                rx="10"
+                fill="{HULL}"
+                stroke="{SIGNAL}"
+                stroke-width="2"
             />
-            <text x="850" y="50" class="caja-titulo">Eje / generador</text>
-            <text x="850" y="77" class="caja-texto">GGn = {ggn} rpm</text>
-            <text x="850" y="101" class="caja-texto">GTn = {gtn} rpm</text>
-            <text x="850" y="125" class="caja-texto">GTT = {gtt} kN m</text>
+
+            <text
+                x="503"
+                y="452"
+                class="box-title"
+            >
+                Combustión
+            </text>
+
+            <text
+                x="503"
+                y="482"
+                class="box-text"
+            >
+                mf = {mf} kg/s
+            </text>
+
+            <text
+                x="503"
+                y="510"
+                class="box-text"
+            >
+                TIC = {tic} %
+            </text>
+
         </g>
 
-        <!-- Escape -->
+
+        <!-- ================================================= -->
+        <!-- TELEMETRÍA TURBINA -->
+        <!-- Debajo del nombre Turbina -->
+        <!-- ================================================= -->
+
         <g filter="url(#shadow)">
+
             <rect
-                x="1130" y="25" width="180" height="90" rx="10"
-                fill="{HULL}" stroke="{rosa_borde}" stroke-width="3"
+                x="755"
+                y="420"
+                width="235"
+                height="125"
+                rx="10"
+                fill="{HULL}"
+                stroke="{TURBINE}"
+                stroke-width="2"
             />
-            <text x="1150" y="55" class="caja-titulo">Escape</text>
-            <text x="1150" y="85" class="caja-texto">Pexh = {pexh} bar</text>
+
+            <text
+                x="773"
+                y="452"
+                class="box-title"
+            >
+                Salida turbina HP
+            </text>
+
+            <text
+                x="773"
+                y="482"
+                class="box-text"
+            >
+                T48 = {t48} °C
+            </text>
+
+            <text
+                x="773"
+                y="510"
+                class="box-text"
+            >
+                P48 = {p48} bar
+            </text>
+
+            <text
+                x="773"
+                y="535"
+                class="box-value"
+            >
+                kMt = {kmt}
+            </text>
+
         </g>
+
+
+        <!-- ================================================= -->
+        <!-- TELEMETRÍA ESCAPE -->
+        <!-- Único recuadro rosa -->
+        <!-- ================================================= -->
+
+        <g filter="url(#shadow)">
+
+            <rect
+                x="1080"
+                y="420"
+                width="220"
+                height="95"
+                rx="10"
+                fill="{HULL}"
+                stroke="{PINK}"
+                stroke-width="3"
+            />
+
+            <text
+                x="1098"
+                y="452"
+                class="box-title"
+            >
+                Escape
+            </text>
+
+            <text
+                x="1098"
+                y="485"
+                class="box-text"
+            >
+                Pexh = {pexh} bar
+            </text>
+
+        </g>
+
 
     </svg>
+
     </body>
+
     </html>
     """
 
     components.html(
         html,
-        height=520,
+        height=570,
         scrolling=False
     )
