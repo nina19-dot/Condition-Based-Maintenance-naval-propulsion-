@@ -1,3 +1,5 @@
+# styles.py
+
 import streamlit as st
 
 from config import (
@@ -44,15 +46,6 @@ def load_css():
             color: {DIAL} !important;
         }}
 
-        h1 {{
-            font-weight: 800 !important;
-            letter-spacing: -0.025em;
-        }}
-
-        h2 {{
-            font-weight: 700 !important;
-        }}
-
         .matricula {{
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.76rem;
@@ -79,19 +72,12 @@ def load_css():
             color: {MIST} !important;
             font-size: 0.95rem;
             line-height: 1.55;
-            max-width: 950px;
+            max-width: 1000px;
             margin-bottom: 18px;
         }}
 
-        .naval-card {{
-            background: {HULL};
-            border: 1px solid {STEEL};
-            border-radius: 8px;
-            padding: 18px;
-        }}
-
         .component-title {{
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: {DIAL} !important;
             margin-bottom: 4px;
@@ -101,6 +87,7 @@ def load_css():
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.76rem;
             color: {MIST} !important;
+            margin-bottom: 10px;
         }}
 
         [data-testid="stMetricValue"] {{
@@ -116,13 +103,24 @@ def load_css():
             margin-bottom: 12px;
         }}
 
+        /* BOTONES */
         [data-testid="stButton"] button {{
-            min-height: 46px;
-            font-weight: 600;
+            min-height: 48px;
+            font-weight: 700;
+            background-color: {DIAL} !important;
+            color: {INK} !important;
+            border: 1px solid {BRASS} !important;
+            border-radius: 8px !important;
         }}
 
-        [data-testid="stPlotlyChart"] {{
-            margin-top: -10px;
+        [data-testid="stButton"] button:hover {{
+            background-color: {BRASS} !important;
+            color: {INK} !important;
+            border: 1px solid {BRASS} !important;
+        }}
+
+        [data-testid="stButton"] button p {{
+            color: {INK} !important;
         }}
 
         hr {{
