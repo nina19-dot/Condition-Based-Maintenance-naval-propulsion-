@@ -1,5 +1,5 @@
 # ui/results.py
-
+import pathlib import Path 
 import streamlit as st
 import plotly.graph_objects as go
 from maintenance import estado_compresor, estado_turbina
@@ -30,7 +30,23 @@ def component_card(title, image_path, coef_value, target_type):
     st.markdown(f'<div class="component-title">{title}</div>', unsafe_allow_html=True)
 
     if image_path:
-        st.image(image_path, use_container_width=True)
+
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    ruta_imagen = BASE_DIR / image_path
+
+    if ruta_imagen.exists():
+
+        st.image(
+            str(ruta_imagen),
+            use_container_width=True
+        )
+
+    else:
+
+        st.warning(
+            f'Imagen no encontrada: {image_path}'
+        )
 
     if coef_value is None:
         st.info(f'Aún no se ha estimado {target_type}.')
