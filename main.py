@@ -108,7 +108,6 @@ plant_placeholder = st.empty()
 
 st.divider()
 
-
 # ============================================================
 # CONDICIONES DE OPERACIÓN
 # ============================================================
@@ -122,99 +121,57 @@ observacion = crear_observacion(
     valores
 )
 
+st.divider()
 
 # ============================================================
-# AHORA DIBUJAMOS LA PLANTA EN EL PLACEHOLDER SUPERIOR
+# PLANTA CODLAG
+# AHORA VA DEBAJO DE LA TELEMETRÍA
 # ============================================================
 
-with plant_placeholder.container():
+st.header("Planta de propulsión CODLAG")
 
-    esquema_planta(
-        componente=st.session_state.active_component,
-        valores=valores,
-        velocidad=velocidad,
-        kMc=st.session_state.kMc,
-        kMt=st.session_state.kMt
-    )
+st.markdown(
+    """
+    <p class="section-description">
+        La telemetría seleccionada se muestra directamente sobre la planta
+        en el componente físico correspondiente.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
+esquema_planta(
+    componente=st.session_state.active_component,
+    valores=valores,
+    velocidad=velocidad
+)
+
+st.divider()
 
 # ============================================================
 # BOTONES
 # ============================================================
 
-st.markdown(
-    "<div style='height:15px'></div>",
-    unsafe_allow_html=True
-)
-
 b1, b2, b3 = st.columns(3)
 
-
 with b1:
-
-    if st.button(
-        "Analizar compresor",
-        use_container_width=True
-    ):
-
-        st.session_state.kMc = (
-            predecir_kMc(
-                rf_kMc,
-                observacion
-            )
-        )
-
+    if st.button("Analizar compresor", use_container_width=True):
+        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
         st.session_state.active_component = "compressor"
-
         st.rerun()
-
 
 with b2:
-
-    if st.button(
-        "Analizar turbina",
-        use_container_width=True
-    ):
-
-        st.session_state.kMt = (
-            predecir_kMt(
-                rf_kMt,
-                observacion
-            )
-        )
-
+    if st.button("Analizar turbina", use_container_width=True):
+        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
         st.session_state.active_component = "turbine"
-
         st.rerun()
-
 
 with b3:
-
-    if st.button(
-        "Analizar sistema completo",
-        use_container_width=True
-    ):
-
-        st.session_state.kMc = (
-            predecir_kMc(
-                rf_kMc,
-                observacion
-            )
-        )
-
-        st.session_state.kMt = (
-            predecir_kMt(
-                rf_kMt,
-                observacion
-            )
-        )
-
+    if st.button("Analizar sistema completo", use_container_width=True):
+        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
+        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
         st.session_state.active_component = "both"
-
         st.rerun()
-
-
-st.divider()
 
 
 # ============================================================
