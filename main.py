@@ -4,19 +4,23 @@ import streamlit as st
 
 from styles import load_css
 from data_utils import cargar_datos
+
 from model_utils import (
     entrenar_modelos,
     crear_observacion,
     predecir_kMc,
     predecir_kMt
 )
-from ui.telemetry import panel_telemetria
+
 from ui.plant_map import esquema_planta
+from ui.telemetry import panel_telemetria
 from ui.process_diagram import diagrama_proceso
+
 from ui.results import (
     resultado_compresor,
     resultado_turbina
 )
+
 
 # ============================================================
 # CONFIGURACIÓN
@@ -31,6 +35,7 @@ st.set_page_config(
 
 load_css()
 
+
 # ============================================================
 # SESSION STATE
 # ============================================================
@@ -44,6 +49,7 @@ if "kMt" not in st.session_state:
 if "active_component" not in st.session_state:
     st.session_state.active_component = None
 
+
 # ============================================================
 # DATOS Y MODELOS
 # ============================================================
@@ -52,6 +58,7 @@ data = cargar_datos()
 
 with st.spinner("Inicializando modelos de degradación..."):
     rf_kMc, rf_kMt = entrenar_modelos(data)
+
 
 # ============================================================
 # PORTADA
@@ -69,9 +76,9 @@ st.markdown(
     </p>
 
     <p class="entrada">
-        La plataforma utiliza condiciones de operación y
-        variables de telemetría para estimar el coeficiente
-        de degradación del compresor kMc y de la turbina kMt.
+        La plataforma utiliza las condiciones de operación
+        y las variables de telemetría para estimar el estado
+        de degradación del compresor y de la turbina.
     </p>
     """,
     unsafe_allow_html=True
@@ -79,65 +86,10 @@ st.markdown(
 
 st.divider()
 
-# ============================================================
-# TELEMETRÍA
-# ============================================================
-
-st.header("Condiciones de operación y telemetría")
-
-st.markdown(
-    """
-    <p class="section-description">
-        Selecciona la velocidad y ajusta los sensores.
-        Los rangos cambian automáticamente según la velocidad elegida.
-    </p>
-    """,
-    unsafe_allow_html=True
-)
-
-velocidad, valores = panel_telemetria(data)
-
-# Variables para mostrar en diagramas
-# T1 y P1 se agregan como constantes conocidas del dataset.
-valores_mostrar = valores.copy()
-valores_mostrar["T1"] = 288.0
-valores_mostrar["P1"] = 1.0
-valores_mostrar["Tp"] = None
-valores_mostrar["lp"] = None
-
-observacion = crear_observacion(velocidad, valores)
-
-st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-
-# ============================================================
-# BOTONES
-# ============================================================
-
-b1, b2, b3 = st.columns(3, gap="medium")
-
-with b1:
-    if st.button("Analizar compresor", use_container_width=True):
-        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
-        st.session_state.active_component = "compressor"
-        st.rerun()
-
-with b2:
-    if st.button("Analizar turbina", use_container_width=True):
-        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
-        st.session_state.active_component = "turbine"
-        st.rerun()
-
-with b3:
-    if st.button("Analizar sistema completo", use_container_width=True):
-        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
-        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
-        st.session_state.active_component = "both"
-        st.rerun()
-
-st.divider()
 
 # ============================================================
 # PLANTA CODLAG
+# Reservamos su lugar ANTES de los controles
 # ============================================================
 
 st.header("Planta de propulsión CODLAG")
@@ -145,75 +97,174 @@ st.header("Planta de propulsión CODLAG")
 st.markdown(
     """
     <p class="section-description">
-        El diagrama muestra la planta CODLAG y la telemetría
-        seleccionada colocada en los puntos donde físicamente corresponde.
+        La telemetría se muestra directamente en el componente
+        o punto físico correspondiente de la planta.
     </p>
     """,
     unsafe_allow_html=True
 )
 
-esquema_planta(
-    componente=st.session_state.active_component,
-    valores=valores_mostrar,
-    velocidad=velocidad,
-    kMc=st.session_state.kMc,
-    kMt=st.session_state.kMt
-)
+plant_placeholder = st.empty()
 
 st.divider()
+
+
+# ============================================================
+# CONDICIONES DE OPERACIÓN
+# ============================================================
+
+st.header("Condiciones de operación y telemetría")
+
+velocidad, valores = panel_telemetria(data)
+
+observacion = crear_observacion(
+    velocidad,
+    valores
+)
+
+
+# ============================================================
+# AHORA DIBUJAMOS LA PLANTA EN EL PLACEHOLDER SUPERIOR
+# ============================================================
+
+with plant_placeholder.container():
+
+    esquema_planta(
+        componente=st.session_state.active_component,
+        valores=valores,
+        velocidad=velocidad,
+        kMc=st.session_state.kMc,
+        kMt=st.session_state.kMt
+    )
+
+
+# ============================================================
+# BOTONES
+# ============================================================
+
+st.markdown(
+    "<div style='height:15px'></div>",
+    unsafe_allow_html=True
+)
+
+b1, b2, b3 = st.columns(3)
+
+
+with b1:
+
+    if st.button(
+        "Analizar compresor",
+        use_container_width=True
+    ):
+
+        st.session_state.kMc = (
+            predecir_kMc(
+                rf_kMc,
+                observacion
+            )
+        )
+
+        st.session_state.active_component = "compressor"
+
+        st.rerun()
+
+
+with b2:
+
+    if st.button(
+        "Analizar turbina",
+        use_container_width=True
+    ):
+
+        st.session_state.kMt = (
+            predecir_kMt(
+                rf_kMt,
+                observacion
+            )
+        )
+
+        st.session_state.active_component = "turbine"
+
+        st.rerun()
+
+
+with b3:
+
+    if st.button(
+        "Analizar sistema completo",
+        use_container_width=True
+    ):
+
+        st.session_state.kMc = (
+            predecir_kMc(
+                rf_kMc,
+                observacion
+            )
+        )
+
+        st.session_state.kMt = (
+            predecir_kMt(
+                rf_kMt,
+                observacion
+            )
+        )
+
+        st.session_state.active_component = "both"
+
+        st.rerun()
+
+
+st.divider()
+
 
 # ============================================================
 # DIAGRAMA DEL PROCESO
 # ============================================================
 
-st.header("Diagrama del proceso")
+st.header("Proceso de la turbina de gas")
 
 st.markdown(
     """
     <p class="section-description">
-        Se muestra el flujo del proceso desde la admisión hasta el escape,
-        con las variables asociadas a cada fase.
+        Las lecturas seleccionadas se muestran en la etapa
+        física correspondiente del proceso.
     </p>
     """,
     unsafe_allow_html=True
 )
 
 diagrama_proceso(
-    valores=valores_mostrar,
+    valores=valores,
     velocidad=velocidad,
     kMc=st.session_state.kMc,
     kMt=st.session_state.kMt
 )
 
+
 st.divider()
 
+
 # ============================================================
-# MÉTRICAS DE RESULTADO
+# RESULTADOS
 # ============================================================
 
 st.header("Estado estimado de los componentes")
 
-res1, res2 = st.columns(2, gap="large")
-
-with res1:
-    resultado_compresor(st.session_state.kMc)
-
-with res2:
-    resultado_turbina(st.session_state.kMt)
-
-st.divider()
-
-# ============================================================
-# ALCANCE
-# ============================================================
-
-st.header("Alcance de la estimación")
-
-st.markdown(
-    """
-    Los resultados corresponden al espacio operativo representado por el
-    simulador. Los criterios de mantenimiento mostrados en la interfaz son
-    demostrativos y una aplicación real requeriría validación con datos
-    operacionales y criterios formales de ingeniería de mantenimiento.
-    """
+comp_col, turb_col = st.columns(
+    2,
+    gap="large"
 )
+
+
+with comp_col:
+
+    resultado_compresor(
+        st.session_state.kMc
+    )
+
+
+with turb_col:
+
+    resultado_turbina(
+        st.session_state.kMt
+    )
