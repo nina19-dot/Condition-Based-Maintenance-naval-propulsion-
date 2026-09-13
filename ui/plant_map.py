@@ -269,8 +269,9 @@ def esquema_planta(
         />
 
         <text
-            x="28"
-            y="205"
+            x="95"
+            y="190"
+            text-anchor="middle"
             class="component-label"
         >
             Hélice estribor
@@ -290,8 +291,9 @@ def esquema_planta(
         />
 
         <text
-            x="28"
-            y="570"
+            x="95"
+            y="555"
+            text-anchor="middle"
             class="component-label"
         >
             Hélice babor
@@ -847,13 +849,12 @@ def esquema_planta(
 
 
         <!-- ESCAPE -->
-        <!-- Lo colocamos más arriba -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="1165"
-                y="365"
+                x="1010"
+                y="415"
                 width="180"
                 height="80"
                 rx="8"
@@ -863,16 +864,16 @@ def esquema_planta(
             />
 
             <text
-                x="1185"
-                y="397"
+                x="1030"
+                y="447"
                 class="box-title"
             >
                 Escape
             </text>
 
             <text
-                x="1185"
-                y="427"
+                x="1030"
+                y="477"
                 class="box-text"
             >
                 Pexh = {pexh} bar
@@ -1053,12 +1054,11 @@ def esquema_planta(
         <!-- ESCAPE -->
         <!-- Conexión corta hacia la salida de la turbina -->
 
-        <polyline
-            points="
-                1165,405
-                1040,405
-                890,455
-            "
+        <line
+            x1="1010"
+            y1="455"
+            x2="890"
+            y2="455"
             class="line-neutral"
         />
 
