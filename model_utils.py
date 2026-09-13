@@ -12,13 +12,9 @@ from config import FEATURES
 @st.cache_resource
 def entrenar_modelos(data):
 
-    # Variables de entrada
     X = data[FEATURES]
 
-    # =============================
-    # MODELO kMc
-    # =============================
-
+    # Random Forest kMc
     y_kMc = data['kMc']
 
     X_train, X_test, y_train_kMc, y_test_kMc = (
@@ -41,10 +37,7 @@ def entrenar_modelos(data):
         y_train_kMc
     )
 
-    # =============================
-    # MODELO kMt
-    # =============================
-
+    # Random Forest kMt
     y_kMt = data['kMt']
 
     (
@@ -71,3 +64,39 @@ def entrenar_modelos(data):
     )
 
     return rf_kMc, rf_kMt
+
+
+def crear_observacion(
+    velocidad,
+    valores
+):
+
+    observacion = {
+        'v': velocidad
+    }
+
+    observacion.update(valores)
+
+    observacion = pd.DataFrame(
+        [observacion],
+        columns=FEATURES
+    )
+
+    return observacion
+
+
+def predecir_coeficientes(
+    rf_kMc,
+    rf_kMt,
+    observacion
+):
+
+    pred_kMc = rf_kMc.predict(
+        observacion
+    )[0]
+
+    pred_kMt = rf_kMt.predict(
+        observacion
+    )[0]
+
+    return pred_kMc, pred_kMt
