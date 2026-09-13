@@ -1,5 +1,7 @@
 # data_utils.py
 
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
@@ -7,20 +9,24 @@ import streamlit as st
 @st.cache_data
 def cargar_datos():
 
-    data = pd.read_csv(
-        'data/naval_propulsion_cbm.csv'
+    base_dir = Path(__file__).resolve().parent
+
+    ruta_csv = (
+        base_dir
+        / "data"
+        / "naval_propulsion_cbm.csv"
     )
 
-    # Eliminar variables constantes
-    columnas_eliminar = [
-        'T1',
-        'P1',
-        'Tp'
-    ]
+    data = pd.read_csv(ruta_csv)
 
+    # Variables eliminadas durante el EDA
     data = data.drop(
-        columns=columnas_eliminar,
-        errors='ignore'
+        columns=[
+            "T1",
+            "P1",
+            "Tp"
+        ],
+        errors="ignore"
     )
 
     return data
@@ -33,7 +39,7 @@ def obtener_rangos_velocidad(
 ):
 
     data_speed = data[
-        data['v'] == velocidad
+        data["v"] == velocidad
     ]
 
     rangos = {}
@@ -41,15 +47,13 @@ def obtener_rangos_velocidad(
     for sensor in sensores:
 
         rangos[sensor] = {
-            'min': float(
+            "min": float(
                 data_speed[sensor].min()
             ),
-
-            'max': float(
+            "max": float(
                 data_speed[sensor].max()
             ),
-
-            'mean': float(
+            "mean": float(
                 data_speed[sensor].mean()
             )
         }
