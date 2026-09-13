@@ -32,7 +32,7 @@ def esquema_planta(
         valores = {}
 
     # ========================================================
-    # COLORES SEGÚN COMPONENTE ANALIZADO
+    # COLORES
     # ========================================================
 
     comp_color = (
@@ -48,62 +48,28 @@ def esquema_planta(
     )
 
     # ========================================================
-    # TELEMETRÍA
+    # VARIABLES
     # ========================================================
 
-    lp = _fmt(
-        valores.get("lp"),
-        3
-    )
+    lp = _fmt(valores.get("lp"), 3)
+    v = _fmt(velocidad, 0)
 
-    v = _fmt(
-        velocidad,
-        0
-    )
+    t2 = _fmt(valores.get("T2"))
+    p2 = _fmt(valores.get("P2"))
 
-    t2 = _fmt(
-        valores.get("T2")
-    )
+    mf = _fmt(valores.get("mf"), 3)
+    tic = _fmt(valores.get("TIC"))
 
-    p2 = _fmt(
-        valores.get("P2")
-    )
+    t48 = _fmt(valores.get("T48"))
+    p48 = _fmt(valores.get("P48"))
 
-    mf = _fmt(
-        valores.get("mf"),
-        3
-    )
+    gtn = _fmt(valores.get("GTn"))
+    ggn = _fmt(valores.get("GGn"))
+    gtt = _fmt(valores.get("GTT"))
 
-    tic = _fmt(
-        valores.get("TIC")
-    )
+    pexh = _fmt(valores.get("Pexh"))
 
-    t48 = _fmt(
-        valores.get("T48")
-    )
-
-    p48 = _fmt(
-        valores.get("P48")
-    )
-
-    gtn = _fmt(
-        valores.get("GTn")
-    )
-
-    ggn = _fmt(
-        valores.get("GGn")
-    )
-
-    gtt = _fmt(
-        valores.get("GTT")
-    )
-
-    pexh = _fmt(
-        valores.get("Pexh")
-    )
-
-    # Tp fue eliminado del modelo porque es idéntico a Ts.
-    # Para visualización usamos el mismo valor.
+    # Tp es equivalente a Ts en el dataset
     tp = _fmt(
         valores.get(
             "Tp",
@@ -112,7 +78,7 @@ def esquema_planta(
     )
 
     # ========================================================
-    # DIAGRAMA SVG
+    # SVG
     # ========================================================
 
     html = f"""
@@ -136,20 +102,33 @@ def esquema_planta(
         }}
 
         .component-label {{
-            fill: {MIST};
+            fill: {DIAL};
+            font-size: 21px;
+            font-weight: 800;
+        }}
+
+        .internal-label {{
+            fill: {DIAL};
             font-size: 17px;
-            font-weight: bold;
+            font-weight: 700;
         }}
 
         .box-title {{
             fill: {DIAL};
-            font-size: 15px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 700;
         }}
 
         .box-text {{
             fill: {MIST};
-            font-size: 13px;
+            font-size: 14px;
+        }}
+
+        .connector {{
+            stroke: {MIST};
+            stroke-width: 2;
+            stroke-dasharray: 7 6;
+            fill: none;
         }}
 
     </style>
@@ -159,9 +138,8 @@ def esquema_planta(
 
     <body>
 
-
     <svg
-        viewBox="0 0 1500 800"
+        viewBox="0 0 1600 920"
         xmlns="http://www.w3.org/2000/svg"
     >
 
@@ -174,7 +152,7 @@ def esquema_planta(
                     dy="4"
                     stdDeviation="6"
                     flood-color="#000000"
-                    flood-opacity="0.25"
+                    flood-opacity="0.28"
                 />
 
             </filter>
@@ -183,47 +161,49 @@ def esquema_planta(
 
 
         <!-- ================================================= -->
-        <!-- EJES -->
+        <!-- PLANTA PRINCIPAL -->
         <!-- ================================================= -->
 
+        <!-- Ejes -->
+
         <line
-            x1="95"
-            y1="185"
-            x2="1370"
-            y2="185"
+            x1="130"
+            y1="285"
+            x2="1410"
+            y2="285"
             stroke="{DIAL}"
             stroke-width="8"
         />
 
         <line
-            x1="95"
-            y1="605"
-            x2="1370"
-            y2="605"
+            x1="130"
+            y1="650"
+            x2="1410"
+            y2="650"
             stroke="{DIAL}"
             stroke-width="8"
         />
 
 
         <!-- ================================================= -->
-        <!-- HÉLICES DEL LADO IZQUIERDO -->
+        <!-- HÉLICES -->
         <!-- ================================================= -->
 
         <ellipse
-            cx="65"
-            cy="185"
-            rx="12"
-            ry="46"
+            cx="95"
+            cy="285"
+            rx="13"
+            ry="48"
             fill="none"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
         <ellipse
-            cx="65"
-            cy="605"
-            rx="12"
-            ry="46"
+            cx="95"
+            cy="650"
+            rx="13"
+            ry="48"
             fill="none"
             stroke="{DIAL}"
             stroke-width="6"
@@ -231,55 +211,20 @@ def esquema_planta(
 
 
         <text
-            x="22"
-            y="120"
+            x="35"
+            y="215"
             class="component-label"
         >
             Hélice estribor
         </text>
 
-
         <text
-            x="22"
-            y="540"
+            x="35"
+            y="580"
             class="component-label"
         >
             Hélice babor
         </text>
-
-
-        <!-- Torque conjunto de hélices -->
-
-        <g filter="url(#shadow)">
-
-            <rect
-                x="20"
-                y="335"
-                width="175"
-                height="82"
-                rx="8"
-                fill="{HULL}"
-                stroke="{STEEL}"
-                stroke-width="2"
-            />
-
-            <text
-                x="38"
-                y="365"
-                class="box-title"
-            >
-                Torque hélices
-            </text>
-
-            <text
-                x="38"
-                y="395"
-                class="box-text"
-            >
-                Tp = {tp} kN m
-            </text>
-
-        </g>
 
 
         <!-- ================================================= -->
@@ -287,19 +232,18 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="270"
-            y="45"
+            x="310"
+            y="165"
             text-anchor="middle"
             class="component-label"
         >
             Generadores diesel
         </text>
 
-
         <rect
-            x="165"
-            y="75"
-            width="230"
+            x="200"
+            y="195"
+            width="235"
             height="72"
             rx="8"
             fill="#7138A8"
@@ -307,11 +251,10 @@ def esquema_planta(
             stroke-width="4"
         />
 
-
         <rect
-            x="165"
-            y="500"
-            width="230"
+            x="200"
+            y="560"
+            width="235"
             height="72"
             rx="8"
             fill="#7138A8"
@@ -319,11 +262,10 @@ def esquema_planta(
             stroke-width="4"
         />
 
-
         <rect
-            x="165"
-            y="615"
-            width="230"
+            x="200"
+            y="675"
+            width="235"
             height="72"
             rx="8"
             fill="#7138A8"
@@ -337,20 +279,19 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="500"
-            y="290"
+            x="600"
+            y="330"
             text-anchor="middle"
             class="component-label"
         >
             Turbina de gas
         </text>
 
-
         <rect
-            x="235"
-            y="315"
-            width="555"
-            height="195"
+            x="330"
+            y="355"
+            width="560"
+            height="205"
             rx="14"
             fill="{HULL}"
             stroke="{STEEL}"
@@ -363,40 +304,39 @@ def esquema_planta(
 
         <polygon
             points="
-                270,360
-                475,385
-                475,440
-                270,465
+                365,400
+                560,425
+                560,485
+                365,510
             "
             fill="{comp_color}"
             stroke="{DIAL}"
             stroke-width="4"
         />
 
-
         <line
-            x1="320"
-            y1="366"
-            x2="320"
-            y2="459"
+            x1="415"
+            y1="406"
+            x2="415"
+            y2="504"
             stroke="{INK}"
             stroke-width="7"
         />
 
         <line
-            x1="370"
-            y1="372"
-            x2="370"
-            y2="453"
+            x1="465"
+            y1="412"
+            x2="465"
+            y2="498"
             stroke="{INK}"
             stroke-width="7"
         />
 
         <line
-            x1="420"
-            y1="378"
-            x2="420"
-            y2="447"
+            x1="515"
+            y1="418"
+            x2="515"
+            y2="492"
             stroke="{INK}"
             stroke-width="7"
         />
@@ -405,8 +345,8 @@ def esquema_planta(
         <!-- COMBUSTIÓN -->
 
         <rect
-            x="495"
-            y="360"
+            x="580"
+            y="400"
             width="110"
             height="110"
             rx="6"
@@ -420,64 +360,60 @@ def esquema_planta(
 
         <polygon
             points="
-                630,380
-                765,355
-                765,475
-                630,450
+                720,420
+                850,395
+                850,515
+                720,490
             "
             fill="{turb_color}"
             stroke="{DIAL}"
             stroke-width="4"
         />
 
-
         <line
-            x1="670"
-            y1="374"
-            x2="670"
-            y2="451"
+            x1="760"
+            y1="414"
+            x2="760"
+            y2="491"
             stroke="{INK}"
             stroke-width="7"
         />
 
         <line
-            x1="715"
-            y1="366"
-            x2="715"
-            y2="459"
+            x1="805"
+            y1="406"
+            x2="805"
+            y2="499"
             stroke="{INK}"
             stroke-width="7"
         />
 
 
-        <!-- Nombres internos -->
+        <!-- NOMBRES INTERNOS -->
 
         <text
-            x="370"
-            y="492"
+            x="465"
+            y="540"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="15"
+            class="internal-label"
         >
             Compresor
         </text>
 
         <text
-            x="550"
-            y="492"
+            x="635"
+            y="540"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="15"
+            class="internal-label"
         >
             Combustión
         </text>
 
         <text
-            x="695"
-            y="492"
+            x="785"
+            y="540"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="15"
+            class="internal-label"
         >
             Turbina
         </text>
@@ -488,28 +424,26 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="865"
-            y="245"
+            x="950"
+            y="335"
             text-anchor="middle"
             class="component-label"
         >
             Embragues
         </text>
 
-
         <circle
-            cx="865"
-            cy="315"
+            cx="950"
+            cy="395"
             r="30"
             fill="{HULL}"
             stroke="{SIGNAL}"
             stroke-width="6"
         />
 
-
         <circle
-            cx="865"
-            cy="505"
+            cx="950"
+            cy="575"
             r="30"
             fill="{HULL}"
             stroke="{SIGNAL}"
@@ -522,18 +456,17 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="1030"
-            y="50"
+            x="1115"
+            y="175"
             text-anchor="middle"
             class="component-label"
         >
             Cajas
         </text>
 
-
         <rect
-            x="995"
-            y="90"
+            x="1080"
+            y="215"
             width="72"
             height="210"
             rx="4"
@@ -542,10 +475,9 @@ def esquema_planta(
             stroke-width="4"
         />
 
-
         <rect
-            x="995"
-            y="470"
+            x="1080"
+            y="565"
             width="72"
             height="210"
             rx="4"
@@ -560,19 +492,18 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <text
-            x="1210"
-            y="60"
+            x="1325"
+            y="180"
             text-anchor="middle"
             class="component-label"
         >
             Motores eléctricos
         </text>
 
-
         <rect
-            x="1130"
-            y="110"
-            width="170"
+            x="1240"
+            y="225"
+            width="175"
             height="95"
             rx="7"
             fill="{BRASS}"
@@ -580,11 +511,10 @@ def esquema_planta(
             stroke-width="4"
         />
 
-
         <rect
-            x="1130"
-            y="555"
-            width="170"
+            x="1240"
+            y="600"
+            width="175"
             height="95"
             rx="7"
             fill="{BRASS}"
@@ -598,53 +528,114 @@ def esquema_planta(
         <!-- ================================================= -->
 
         <line
-            x1="790"
-            y1="415"
-            x2="835"
-            y2="315"
+            x1="890"
+            y1="455"
+            x2="920"
+            y2="395"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
         <line
-            x1="790"
-            y1="415"
-            x2="835"
-            y2="505"
+            x1="890"
+            y1="455"
+            x2="920"
+            y2="575"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
         <line
-            x1="895"
-            y1="315"
-            x2="995"
-            y2="195"
+            x1="980"
+            y1="395"
+            x2="1080"
+            y2="320"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
         <line
-            x1="895"
-            y1="505"
-            x2="995"
-            y2="605"
+            x1="980"
+            y1="575"
+            x2="1080"
+            y2="650"
             stroke="{DIAL}"
             stroke-width="6"
         />
 
 
         <!-- ================================================= -->
-        <!-- TELEMETRÍA: COMBUSTIÓN MÁS ARRIBA -->
+        <!-- TELEMETRÍA FUERA DE LA PLANTA -->
+        <!-- ================================================= -->
+
+
+        <!-- TORQUE HÉLICES - IZQUIERDA -->
+
+        <g filter="url(#shadow)">
+
+            <rect
+                x="20"
+                y="385"
+                width="210"
+                height="90"
+                rx="8"
+                fill="{HULL}"
+                stroke="{STEEL}"
+                stroke-width="2"
+            />
+
+            <text
+                x="40"
+                y="417"
+                class="box-title"
+            >
+                Torque hélices
+            </text>
+
+            <text
+                x="40"
+                y="450"
+                class="box-text"
+            >
+                Tp = {tp} kN m
+            </text>
+
+        </g>
+
+
+        <!-- línea a los ejes/hélices -->
+
+        <path
+            d="
+                M 230 430
+                L 270 430
+                L 270 285
+                L 130 285
+            "
+            class="connector"
+        />
+
+        <path
+            d="
+                M 270 430
+                L 270 650
+                L 130 650
+            "
+            class="connector"
+        />
+
+
+        <!-- ================================================= -->
+        <!-- COMBUSTIÓN - ARRIBA -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="455"
-                y="110"
-                width="210"
-                height="105"
+                x="500"
+                y="45"
+                width="230"
+                height="110"
                 rx="8"
                 fill="{HULL}"
                 stroke="{SIGNAL}"
@@ -652,24 +643,24 @@ def esquema_planta(
             />
 
             <text
-                x="473"
-                y="140"
+                x="520"
+                y="78"
                 class="box-title"
             >
                 Combustión
             </text>
 
             <text
-                x="473"
-                y="170"
+                x="520"
+                y="110"
                 class="box-text"
             >
                 mf = {mf} kg/s
             </text>
 
             <text
-                x="473"
-                y="198"
+                x="520"
+                y="140"
                 class="box-text"
             >
                 TIC = {tic} %
@@ -678,28 +669,26 @@ def esquema_planta(
         </g>
 
 
-        <line
-            x1="550"
-            y1="215"
-            x2="550"
-            y2="360"
-            stroke="{SIGNAL}"
-            stroke-width="2"
-            stroke-dasharray="5 4"
+        <path
+            d="
+                M 615 155
+                L 615 385
+            "
+            class="connector"
         />
 
 
         <!-- ================================================= -->
-        <!-- GENERADOR DE GAS -->
+        <!-- GENERADOR DE GAS - ARRIBA -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="690"
-                y="125"
-                width="200"
-                height="80"
+                x="760"
+                y="45"
+                width="220"
+                height="90"
                 rx="8"
                 fill="{HULL}"
                 stroke="{STEEL}"
@@ -707,16 +696,16 @@ def esquema_planta(
             />
 
             <text
-                x="708"
-                y="155"
+                x="780"
+                y="78"
                 class="box-title"
             >
                 Generador de gas
             </text>
 
             <text
-                x="708"
-                y="184"
+                x="780"
+                y="110"
                 class="box-text"
             >
                 GGn = {ggn} rpm
@@ -725,28 +714,27 @@ def esquema_planta(
         </g>
 
 
-        <line
-            x1="790"
-            y1="205"
-            x2="790"
-            y2="355"
-            stroke="{STEEL}"
-            stroke-width="2"
-            stroke-dasharray="5 4"
+        <path
+            d="
+                M 870 135
+                L 870 395
+                L 850 395
+            "
+            class="connector"
         />
 
 
         <!-- ================================================= -->
-        <!-- SALIDA COMPRESOR -->
+        <!-- SALIDA COMPRESOR - ABAJO -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="265"
-                y="545"
-                width="215"
-                height="105"
+                x="330"
+                y="755"
+                width="230"
+                height="110"
                 rx="8"
                 fill="{HULL}"
                 stroke="{comp_color}"
@@ -754,24 +742,24 @@ def esquema_planta(
             />
 
             <text
-                x="283"
-                y="575"
+                x="350"
+                y="788"
                 class="box-title"
             >
                 Salida compresor
             </text>
 
             <text
-                x="283"
-                y="604"
+                x="350"
+                y="820"
                 class="box-text"
             >
                 T2 = {t2} °C
             </text>
 
             <text
-                x="283"
-                y="631"
+                x="350"
+                y="850"
                 class="box-text"
             >
                 P2 = {p2} bar
@@ -780,28 +768,26 @@ def esquema_planta(
         </g>
 
 
-        <line
-            x1="370"
-            y1="545"
-            x2="370"
-            y2="510"
-            stroke="{comp_color}"
-            stroke-width="2"
-            stroke-dasharray="5 4"
+        <path
+            d="
+                M 445 755
+                L 445 560
+            "
+            class="connector"
         />
 
 
         <!-- ================================================= -->
-        <!-- TURBINA / EJE -->
+        <!-- TURBINA / EJE - ABAJO -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="625"
-                y="545"
-                width="250"
-                height="130"
+                x="650"
+                y="750"
+                width="290"
+                height="135"
                 rx="8"
                 fill="{HULL}"
                 stroke="{turb_color}"
@@ -809,32 +795,32 @@ def esquema_planta(
             />
 
             <text
-                x="643"
-                y="575"
+                x="670"
+                y="783"
                 class="box-title"
             >
                 Turbina / eje
             </text>
 
             <text
-                x="643"
-                y="603"
+                x="670"
+                y="815"
                 class="box-text"
             >
                 GTn = {gtn} rpm
             </text>
 
             <text
-                x="643"
-                y="630"
+                x="670"
+                y="845"
                 class="box-text"
             >
                 GTT = {gtt} kN m
             </text>
 
             <text
-                x="643"
-                y="657"
+                x="670"
+                y="875"
                 class="box-text"
             >
                 T48 = {t48} °C | P48 = {p48} bar
@@ -843,17 +829,27 @@ def esquema_planta(
         </g>
 
 
+        <path
+            d="
+                M 795 750
+                L 795 560
+                L 795 515
+            "
+            class="connector"
+        />
+
+
         <!-- ================================================= -->
-        <!-- ESCAPE -->
+        <!-- ESCAPE - DERECHA -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="805"
+                x="1180"
                 y="390"
-                width="165"
-                height="75"
+                width="180"
+                height="80"
                 rx="8"
                 fill="{HULL}"
                 stroke="{STEEL}"
@@ -861,16 +857,16 @@ def esquema_planta(
             />
 
             <text
-                x="823"
-                y="420"
+                x="1200"
+                y="422"
                 class="box-title"
             >
                 Escape
             </text>
 
             <text
-                x="823"
-                y="448"
+                x="1200"
+                y="452"
                 class="box-text"
             >
                 Pexh = {pexh} bar
@@ -879,17 +875,27 @@ def esquema_planta(
         </g>
 
 
+        <path
+            d="
+                M 1180 430
+                L 1000 430
+                L 850 455
+            "
+            class="connector"
+        />
+
+
         <!-- ================================================= -->
-        <!-- OPERACIÓN HASTA LA DERECHA -->
+        <!-- OPERACIÓN - EXTREMO DERECHO -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
 
             <rect
-                x="1310"
-                y="335"
-                width="170"
-                height="105"
+                x="1375"
+                y="395"
+                width="200"
+                height="110"
                 rx="8"
                 fill="{HULL}"
                 stroke="{STEEL}"
@@ -897,24 +903,24 @@ def esquema_planta(
             />
 
             <text
-                x="1328"
-                y="365"
+                x="1395"
+                y="428"
                 class="box-title"
             >
                 Operación
             </text>
 
             <text
-                x="1328"
-                y="395"
+                x="1395"
+                y="460"
                 class="box-text"
             >
                 lp = {lp}
             </text>
 
             <text
-                x="1328"
-                y="423"
+                x="1395"
+                y="490"
                 class="box-text"
             >
                 v = {v} knots
@@ -922,14 +928,29 @@ def esquema_planta(
 
         </g>
 
+
+        <!-- línea de operación hacia el sistema -->
+
+        <path
+            d="
+                M 1375 450
+                L 1325 450
+                L 1325 285
+                L 1410 285
+            "
+            class="connector"
+        />
+
+
     </svg>
 
     </body>
+
     </html>
     """
 
     components.html(
         html,
-        height=800,
+        height=920,
         scrolling=False
     )
