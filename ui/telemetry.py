@@ -15,12 +15,45 @@ from data_utils import (
 
 def panel_telemetria(data):
 
-    # Velocidad
-    velocidad = st.select_slider(
-        "Velocidad del buque [knots]",
-        options=VELOCIDADES,
-        value=15
+    # ========================================================
+    # CONDICIÓN OPERACIONAL
+    # ========================================================
+
+    op1, op2 = st.columns(
+        [2, 1],
+        gap="large"
     )
+
+    with op1:
+
+        velocidad = st.select_slider(
+            "Velocidad del buque [knots]",
+            options=VELOCIDADES,
+            value=15
+        )
+
+
+    # lp correspondiente a esa velocidad
+    data_speed = data[
+        data["v"] == velocidad
+    ]
+
+    lp = float(
+        data_speed["lp"].mean()
+    )
+
+
+    with op2:
+
+        st.metric(
+            "Lever position (lp)",
+            f"{lp:.3f}"
+        )
+
+
+    # ========================================================
+    # RANGOS POR VELOCIDAD
+    # ========================================================
 
     rangos = obtener_rangos_velocidad(
         data,
@@ -28,18 +61,23 @@ def panel_telemetria(data):
         SENSORES
     )
 
+    # lp también se devuelve para los diagramas
+    valores = {
+        "lp": lp
+    }
+
+
     st.markdown(
-        "<div style='height:12px'></div>",
-        unsafe_allow_html=True
+        "### Variables de telemetría"
     )
 
-    valores = {}
 
     # Dos columnas amplias
     col1, col2 = st.columns(
         2,
         gap="large"
     )
+
 
     for i, sensor in enumerate(SENSORES):
 
@@ -61,6 +99,7 @@ def panel_telemetria(data):
             else col2
         )
 
+
         with columna:
 
             valores[sensor] = st.slider(
@@ -71,5 +110,6 @@ def panel_telemetria(data):
                 step=float(step),
                 key=f"{sensor}_{velocidad}"
             )
+
 
     return velocidad, valores
