@@ -28,60 +28,23 @@ def diagrama_proceso(
     kMt=None
 ):
 
-    lp = _fmt(
-        valores.get("lp"),
-        3
-    )
+    lp = _fmt(valores.get("lp"), 3)
+    v = _fmt(velocidad, 0)
 
-    v = _fmt(
-        velocidad,
-        0
-    )
+    t2 = _fmt(valores.get("T2"))
+    p2 = _fmt(valores.get("P2"))
 
-    t2 = _fmt(
-        valores.get("T2")
-    )
+    mf = _fmt(valores.get("mf"), 3)
+    tic = _fmt(valores.get("TIC"))
 
-    p2 = _fmt(
-        valores.get("P2")
-    )
+    t48 = _fmt(valores.get("T48"))
+    p48 = _fmt(valores.get("P48"))
 
-    mf = _fmt(
-        valores.get("mf"),
-        3
-    )
+    gtn = _fmt(valores.get("GTn"))
+    ggn = _fmt(valores.get("GGn"))
+    gtt = _fmt(valores.get("GTT"))
 
-    tic = _fmt(
-        valores.get("TIC")
-    )
-
-    t48 = _fmt(
-        valores.get("T48")
-    )
-
-    p48 = _fmt(
-        valores.get("P48")
-    )
-
-    gtn = _fmt(
-        valores.get("GTn")
-    )
-
-    ggn = _fmt(
-        valores.get("GGn")
-    )
-
-    gtt = _fmt(
-        valores.get("GTT")
-    )
-
-    pexh = _fmt(
-        valores.get("Pexh")
-    )
-
-    ts = _fmt(
-        valores.get("Ts")
-    )
+    pexh = _fmt(valores.get("Pexh"))
 
     kmc = (
         "-"
@@ -116,18 +79,24 @@ def diagrama_proceso(
             display: block;
         }}
 
-        .title {{
+        .stage {{
             fill: {DIAL};
-            font-size: 15px;
+            font-size: 18px;
             font-weight: bold;
         }}
 
-        .text {{
+        .data-title {{
+            fill: {DIAL};
+            font-size: 14px;
+            font-weight: bold;
+        }}
+
+        .data {{
             fill: {MIST};
             font-size: 13px;
         }}
 
-        .accent {{
+        .value {{
             fill: {BRASS};
             font-size: 13px;
             font-weight: bold;
@@ -142,9 +111,64 @@ def diagrama_proceso(
 
 
     <svg
-        viewBox="0 0 1300 520"
+        viewBox="0 0 1400 570"
         xmlns="http://www.w3.org/2000/svg"
     >
+
+
+        <defs>
+
+            <linearGradient
+                id="compressorGradient"
+                x1="0%"
+                x2="100%"
+            >
+
+                <stop
+                    offset="0%"
+                    stop-color="#68B7E8"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="#367EAE"
+                />
+
+            </linearGradient>
+
+
+            <linearGradient
+                id="turbineGradient"
+                x1="0%"
+                x2="100%"
+            >
+
+                <stop
+                    offset="0%"
+                    stop-color="#E2AD47"
+                />
+
+                <stop
+                    offset="100%"
+                    stop-color="#A76918"
+                />
+
+            </linearGradient>
+
+
+            <filter id="shadow">
+
+                <feDropShadow
+                    dx="0"
+                    dy="5"
+                    stdDeviation="7"
+                    flood-color="#000"
+                    flood-opacity="0.28"
+                />
+
+            </filter>
+
+        </defs>
 
 
         <!-- ================================================ -->
@@ -153,38 +177,36 @@ def diagrama_proceso(
 
         <polygon
             points="
-                20,100
-                185,135
-                185,235
-                20,270
+                20,105
+                190,145
+                190,255
+                20,295
             "
-            fill="none"
+            fill="#142F33"
             stroke="{MIST}"
             stroke-width="3"
         />
 
 
-        <!-- flujo azul -->
-
         <path
-            d="M30 130 C80 130 125 145 175 155"
+            d="M35 145 C90 145 130 155 180 170"
             fill="none"
             stroke="#4F9BD8"
-            stroke-width="4"
+            stroke-width="5"
         />
 
         <path
-            d="M30 185 C90 185 125 185 175 185"
+            d="M35 200 C95 200 130 200 180 200"
             fill="none"
             stroke="#4F9BD8"
-            stroke-width="4"
+            stroke-width="5"
         />
 
         <path
-            d="M30 240 C80 240 125 225 175 215"
+            d="M35 255 C90 255 130 245 180 230"
             fill="none"
             stroke="#4F9BD8"
-            stroke-width="4"
+            stroke-width="5"
         />
 
 
@@ -194,52 +216,29 @@ def diagrama_proceso(
 
         <polygon
             points="
-                185,115
-                420,145
-                420,225
-                185,255
+                190,120
+                440,155
+                440,245
+                190,280
             "
-            fill="#4E9FDB"
+            fill="url(#compressorGradient)"
             stroke="{DIAL}"
             stroke-width="4"
+            filter="url(#shadow)"
         />
 
 
-        <line
-            x1="230"
-            y1="121"
-            x2="230"
-            y2="249"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="235" y1="126" x2="235" y2="274"
+              stroke="{INK}" stroke-width="8"/>
 
-        <line
-            x1="280"
-            y1="128"
-            x2="280"
-            y2="242"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="290" y1="134" x2="290" y2="266"
+              stroke="{INK}" stroke-width="8"/>
 
-        <line
-            x1="330"
-            y1="134"
-            x2="330"
-            y2="236"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="345" y1="142" x2="345" y2="258"
+              stroke="{INK}" stroke-width="8"/>
 
-        <line
-            x1="380"
-            y1="140"
-            x2="380"
-            y2="230"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="400" y1="150" x2="400" y2="250"
+              stroke="{INK}" stroke-width="8"/>
 
 
         <!-- ================================================ -->
@@ -247,24 +246,25 @@ def diagrama_proceso(
         <!-- ================================================ -->
 
         <rect
-            x="430"
-            y="118"
-            width="270"
-            height="135"
-            rx="8"
+            x="455"
+            y="120"
+            width="285"
+            height="160"
+            rx="10"
             fill="{HULL}"
             stroke="{DIAL}"
             stroke-width="4"
+            filter="url(#shadow)"
         />
 
 
         <rect
-            x="475"
-            y="145"
-            width="170"
-            height="82"
-            rx="8"
-            fill="#374E52"
+            x="505"
+            y="150"
+            width="180"
+            height="100"
+            rx="12"
+            fill="#334D51"
             stroke="{MIST}"
             stroke-width="2"
         />
@@ -272,11 +272,11 @@ def diagrama_proceso(
 
         <polygon
             points="
-                480,175
-                585,175
-                640,185
-                585,195
-                480,195
+                515,190
+                625,190
+                680,200
+                625,210
+                515,210
             "
             fill="{SIGNAL}"
         />
@@ -284,14 +284,14 @@ def diagrama_proceso(
 
         <polygon
             points="
-                475,185
-                505,160
-                497,181
-                530,185
-                497,192
-                505,215
+                510,200
+                545,170
+                535,194
+                572,200
+                535,207
+                545,235
             "
-            fill="#F5C542"
+            fill="#FFC94A"
         />
 
 
@@ -301,43 +301,29 @@ def diagrama_proceso(
 
         <polygon
             points="
-                720,145
-                920,110
-                920,260
-                720,225
+                765,155
+                970,115
+                970,285
+                765,245
             "
-            fill="{BRASS}"
+            fill="url(#turbineGradient)"
             stroke="{DIAL}"
             stroke-width="4"
+            filter="url(#shadow)"
         />
 
 
-        <line
-            x1="760"
-            y1="138"
-            x2="760"
-            y2="232"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="805" y1="147" x2="805" y2="253"
+              stroke="{INK}" stroke-width="8"/>
 
-        <line
-            x1="810"
-            y1="130"
-            x2="810"
-            y2="240"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="855" y1="137" x2="855" y2="263"
+              stroke="{INK}" stroke-width="8"/>
 
-        <line
-            x1="860"
-            y1="120"
-            x2="860"
-            y2="250"
-            stroke="{INK}"
-            stroke-width="7"
-        />
+        <line x1="905" y1="128" x2="905" y2="272"
+              stroke="{INK}" stroke-width="8"/>
+
+        <line x1="945" y1="120" x2="945" y2="280"
+              stroke="{INK}" stroke-width="8"/>
 
 
         <!-- ================================================ -->
@@ -346,366 +332,271 @@ def diagrama_proceso(
 
         <polygon
             points="
-                920,110
-                1280,70
-                1280,300
-                920,260
+                970,115
+                1380,65
+                1380,335
+                970,285
             "
-            fill="none"
+            fill="#142F33"
             stroke="{MIST}"
             stroke-width="3"
         />
 
 
         <path
-            d="M935 150 C1010 140 1110 125 1260 120"
+            d="M990 160 C1090 145 1210 125 1360 120"
             fill="none"
             stroke="#B44B8A"
-            stroke-width="4"
+            stroke-width="5"
         />
 
         <path
-            d="M935 185 C1050 185 1150 185 1260 185"
+            d="M990 200 C1110 200 1230 200 1360 200"
             fill="none"
             stroke="#B44B8A"
-            stroke-width="4"
+            stroke-width="5"
         />
 
         <path
-            d="M935 220 C1010 230 1110 245 1260 250"
+            d="M990 240 C1090 255 1210 275 1360 280"
             fill="none"
             stroke="#B44B8A"
-            stroke-width="4"
+            stroke-width="5"
         />
 
 
         <!-- EJE -->
 
         <line
-            x1="185"
-            y1="185"
-            x2="920"
-            y2="185"
+            x1="190"
+            y1="200"
+            x2="970"
+            y2="200"
             stroke="#D8D8D8"
-            stroke-width="7"
+            stroke-width="8"
         />
 
 
         <!-- ================================================ -->
-        <!-- NOMBRES -->
+        <!-- ETIQUETAS -->
         <!-- ================================================ -->
 
         <text
             x="100"
-            y="335"
+            y="365"
             text-anchor="middle"
-            fill="{MIST}"
-            font-size="18"
+            class="stage"
         >
             Admisión
         </text>
 
 
         <text
-            x="300"
-            y="335"
+            x="315"
+            y="365"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="18"
-            font-weight="bold"
+            class="stage"
         >
             Compresor
         </text>
 
 
         <text
-            x="565"
-            y="335"
+            x="595"
+            y="365"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="18"
+            class="stage"
         >
             Cámara de combustión
         </text>
 
 
         <text
-            x="820"
-            y="335"
+            x="865"
+            y="365"
             text-anchor="middle"
-            fill="{DIAL}"
-            font-size="18"
-            font-weight="bold"
+            class="stage"
         >
             Turbina
         </text>
 
 
         <text
-            x="1090"
-            y="335"
+            x="1180"
+            y="365"
             text-anchor="middle"
-            fill="{MIST}"
-            font-size="18"
+            class="stage"
         >
             Escape
         </text>
 
 
         <!-- ================================================ -->
-        <!-- TELEMETRÍA DEL PROCESO -->
+        <!-- DATOS POR ETAPA -->
         <!-- ================================================ -->
 
 
-        <!-- Condición operacional -->
+        <!-- OPERACIÓN -->
 
         <rect
             x="20"
-            y="370"
+            y="400"
             width="190"
-            height="105"
-            rx="8"
+            height="115"
+            rx="10"
             fill="{HULL}"
             stroke="{STEEL}"
             stroke-width="2"
         />
 
-        <text
-            x="35"
-            y="397"
-            class="title"
-        >
+        <text x="35" y="428" class="data-title">
             Operación
         </text>
 
-        <text
-            x="35"
-            y="424"
-            class="text"
-        >
+        <text x="35" y="456" class="data">
             lp = {lp}
         </text>
 
-        <text
-            x="35"
-            y="449"
-            class="text"
-        >
+        <text x="35" y="483" class="data">
             v = {v} knots
         </text>
 
 
-        <!-- Compresor -->
+        <!-- COMPRESOR -->
 
         <rect
             x="235"
-            y="370"
-            width="210"
-            height="120"
-            rx="8"
+            y="400"
+            width="220"
+            height="130"
+            rx="10"
             fill="{HULL}"
-            stroke="{STEEL}"
+            stroke="#4E9FDB"
             stroke-width="2"
         />
 
-        <text
-            x="250"
-            y="397"
-            class="title"
-        >
+        <text x="250" y="428" class="data-title">
             Salida compresor
         </text>
 
-        <text
-            x="250"
-            y="424"
-            class="text"
-        >
+        <text x="250" y="456" class="data">
             T2 = {t2} °C
         </text>
 
-        <text
-            x="250"
-            y="449"
-            class="text"
-        >
+        <text x="250" y="483" class="data">
             P2 = {p2} bar
         </text>
 
-        <text
-            x="250"
-            y="474"
-            class="accent"
-        >
+        <text x="250" y="512" class="value">
             kMc = {kmc}
         </text>
 
 
-        <!-- Combustión -->
+        <!-- COMBUSTIÓN -->
 
         <rect
-            x="470"
-            y="370"
-            width="190"
-            height="105"
-            rx="8"
+            x="480"
+            y="400"
+            width="220"
+            height="115"
+            rx="10"
             fill="{HULL}"
-            stroke="{STEEL}"
+            stroke="{SIGNAL}"
             stroke-width="2"
         />
 
-        <text
-            x="485"
-            y="397"
-            class="title"
-        >
+        <text x="495" y="428" class="data-title">
             Combustión
         </text>
 
-        <text
-            x="485"
-            y="424"
-            class="text"
-        >
+        <text x="495" y="456" class="data">
             mf = {mf} kg/s
         </text>
 
-        <text
-            x="485"
-            y="449"
-            class="text"
-        >
+        <text x="495" y="483" class="data">
             TIC = {tic} %
         </text>
 
 
-        <!-- Eje generador -->
+        <!-- GENERADOR -->
 
         <rect
-            x="685"
-            y="370"
-            width="200"
-            height="120"
-            rx="8"
+            x="725"
+            y="400"
+            width="225"
+            height="130"
+            rx="10"
             fill="{HULL}"
             stroke="{STEEL}"
             stroke-width="2"
         />
 
-        <text
-            x="700"
-            y="397"
-            class="title"
-        >
+        <text x="740" y="428" class="data-title">
             Eje / generador
         </text>
 
-        <text
-            x="700"
-            y="424"
-            class="text"
-        >
+        <text x="740" y="456" class="data">
             GGn = {ggn} rpm
         </text>
 
-        <text
-            x="700"
-            y="449"
-            class="text"
-        >
+        <text x="740" y="483" class="data">
             GTn = {gtn} rpm
         </text>
 
-        <text
-            x="700"
-            y="474"
-            class="text"
-        >
+        <text x="740" y="510" class="data">
             GTT = {gtt} kN m
         </text>
 
 
-        <!-- Turbina -->
+        <!-- TURBINA -->
 
         <rect
-            x="910"
-            y="370"
-            width="195"
-            height="120"
-            rx="8"
+            x="975"
+            y="400"
+            width="215"
+            height="130"
+            rx="10"
             fill="{HULL}"
-            stroke="{STEEL}"
+            stroke="{BRASS}"
             stroke-width="2"
         />
 
-        <text
-            x="925"
-            y="397"
-            class="title"
-        >
+        <text x="990" y="428" class="data-title">
             Salida turbina HP
         </text>
 
-        <text
-            x="925"
-            y="424"
-            class="text"
-        >
+        <text x="990" y="456" class="data">
             T48 = {t48} °C
         </text>
 
-        <text
-            x="925"
-            y="449"
-            class="text"
-        >
+        <text x="990" y="483" class="data">
             P48 = {p48} bar
         </text>
 
-        <text
-            x="925"
-            y="474"
-            class="accent"
-        >
+        <text x="990" y="512" class="value">
             kMt = {kmt}
         </text>
 
 
-        <!-- Escape -->
+        <!-- ESCAPE -->
 
         <rect
-            x="1130"
-            y="370"
-            width="150"
-            height="105"
-            rx="8"
+            x="1215"
+            y="400"
+            width="165"
+            height="115"
+            rx="10"
             fill="{HULL}"
             stroke="{STEEL}"
             stroke-width="2"
         />
 
-        <text
-            x="1145"
-            y="397"
-            class="title"
-        >
+        <text x="1230" y="428" class="data-title">
             Escape
         </text>
 
-        <text
-            x="1145"
-            y="424"
-            class="text"
-        >
-            Pexh = {pexh}
-        </text>
-
-        <text
-            x="1145"
-            y="449"
-            class="text"
-        >
-            Ts = {ts}
+        <text x="1230" y="456" class="data">
+            Pexh = {pexh} bar
         </text>
 
 
@@ -719,6 +610,6 @@ def diagrama_proceso(
 
     components.html(
         html,
-        height=520,
+        height=570,
         scrolling=False
     )
