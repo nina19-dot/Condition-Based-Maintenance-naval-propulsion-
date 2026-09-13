@@ -15,6 +15,7 @@ from data_utils import (
 
 def panel_telemetria(data):
 
+    # Velocidad
     velocidad = st.select_slider(
         "Velocidad del buque [knots]",
         options=VELOCIDADES,
@@ -27,44 +28,48 @@ def panel_telemetria(data):
         SENSORES
     )
 
+    st.markdown(
+        "<div style='height:12px'></div>",
+        unsafe_allow_html=True
+    )
+
     valores = {}
 
-    with st.expander(
-        "Telemetría del sistema",
-        expanded=True
-    ):
+    # Dos columnas amplias
+    col1, col2 = st.columns(
+        2,
+        gap="large"
+    )
 
-        columnas = st.columns(3)
+    for i, sensor in enumerate(SENSORES):
 
-        for i, sensor in enumerate(SENSORES):
+        rango = rangos[sensor]
 
-            rango = rangos[sensor]
+        minimo = rango["min"]
+        maximo = rango["max"]
+        promedio = rango["mean"]
 
-            minimo = rango["min"]
-            maximo = rango["max"]
-            promedio = rango["mean"]
+        step = (
+            (maximo - minimo) / 100
+            if maximo != minimo
+            else 0.001
+        )
 
-            step = (
-                (maximo - minimo) / 100
-                if maximo != minimo
-                else 0.001
+        columna = (
+            col1
+            if i % 2 == 0
+            else col2
+        )
+
+        with columna:
+
+            valores[sensor] = st.slider(
+                f"{sensor} [{UNIDADES[sensor]}]",
+                min_value=float(minimo),
+                max_value=float(maximo),
+                value=float(promedio),
+                step=float(step),
+                key=f"{sensor}_{velocidad}"
             )
-
-            columna = columnas[
-                i % 3
-            ]
-
-            with columna:
-
-                valores[sensor] = (
-                    st.slider(
-                        f"{sensor} [{UNIDADES[sensor]}]",
-                        min_value=float(minimo),
-                        max_value=float(maximo),
-                        value=float(promedio),
-                        step=float(step),
-                        key=f"{sensor}_{velocidad}"
-                    )
-                )
 
     return velocidad, valores
