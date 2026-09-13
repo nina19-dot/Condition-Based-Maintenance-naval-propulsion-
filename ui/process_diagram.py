@@ -269,7 +269,7 @@ def diagrama_proceso(
 
         <text
             x="75"
-            y="130"
+            y="110"
             class="sensor-blue"
         >
             T1
