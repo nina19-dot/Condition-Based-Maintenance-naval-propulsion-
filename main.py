@@ -21,7 +21,7 @@ from ui.results import (
     resultado_compresor,
     resultado_turbina
 )
-
+from ui.process_diagram import diagrama_proceso
 
 # ============================================================
 # CONFIGURACIÓN
@@ -239,39 +239,47 @@ st.divider()
 # RESULTADOS
 # ============================================================
 
-st.header(
-    "Estado estimado de los componentes"
-)
+st.divider()
+
+st.header("Estado estimado de los componentes")
 
 st.markdown(
     """
     <p class="section-description">
-        Cada bloque muestra el componente dentro de la
-        turbina de gas, su coeficiente estimado y el nivel
-        relativo de degradación.
+        El diagrama central muestra las variables de telemetría
+        seleccionadas para cada fase del proceso, así como los
+        coeficientes estimados del compresor y la turbina.
     </p>
     """,
     unsafe_allow_html=True
 )
 
-comp_col, turb_col = st.columns(
-    2,
+col_comp, col_diag, col_turb = st.columns(
+    [1.0, 1.8, 1.0],
     gap="large"
 )
 
+with col_comp:
+    resultado_compresor(st.session_state.kMc)
 
-with comp_col:
-
-    resultado_compresor(
-        st.session_state.kMc
+with col_diag:
+    st.markdown(
+        """
+        <div class="component-title">Diagrama del proceso</div>
+        <div class="component-subtitle">Telemetría por etapa</div>
+        """,
+        unsafe_allow_html=True
     )
 
-
-with turb_col:
-
-    resultado_turbina(
-        st.session_state.kMt
+    diagrama_proceso(
+        valores=valores,
+        velocidad=velocidad,
+        kMc=st.session_state.kMc,
+        kMt=st.session_state.kMt
     )
+
+with col_turb:
+    resultado_turbina(st.session_state.kMt)
 
 
 # ============================================================
