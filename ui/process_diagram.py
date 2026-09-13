@@ -14,45 +14,95 @@ from config import (
 
 
 def _fmt(valor, dec=2):
+
     if valor is None:
         return "-"
+
     return f"{valor:.{dec}f}"
 
 
-def diagrama_proceso(valores, velocidad, kMc=None, kMt=None):
+def diagrama_proceso(
+    valores,
+    velocidad,
+    kMc=None,
+    kMt=None
+):
 
-    if valores is None:
-        valores = {}
+    lp = _fmt(
+        valores.get("lp"),
+        3
+    )
 
-    lp_txt = _fmt(valores.get("lp"), 2)
-    v_txt = _fmt(velocidad, 0)
+    v = _fmt(
+        velocidad,
+        0
+    )
 
-    t1_txt = _fmt(valores.get("T1"))
-    p1_txt = _fmt(valores.get("P1"))
+    t2 = _fmt(
+        valores.get("T2")
+    )
 
-    t2_txt = _fmt(valores.get("T2"))
-    p2_txt = _fmt(valores.get("P2"))
-    ggn_txt = _fmt(valores.get("GGn"))
+    p2 = _fmt(
+        valores.get("P2")
+    )
 
-    mf_txt = _fmt(valores.get("mf"), 3)
-    tic_txt = _fmt(valores.get("TIC"))
+    mf = _fmt(
+        valores.get("mf"),
+        3
+    )
 
-    gtn_txt = _fmt(valores.get("GTn"))
-    gtt_txt = _fmt(valores.get("GTT"))
-    t48_txt = _fmt(valores.get("T48"))
-    p48_txt = _fmt(valores.get("P48"))
+    tic = _fmt(
+        valores.get("TIC")
+    )
 
-    pexh_txt = _fmt(valores.get("Pexh"))
-    ts_txt = _fmt(valores.get("Ts"))
-    tp_txt = _fmt(valores.get("Tp"))
+    t48 = _fmt(
+        valores.get("T48")
+    )
 
-    kmc_txt = "-" if kMc is None else f"{kMc:.4f}"
-    kmt_txt = "-" if kMt is None else f"{kMt:.4f}"
+    p48 = _fmt(
+        valores.get("P48")
+    )
+
+    gtn = _fmt(
+        valores.get("GTn")
+    )
+
+    ggn = _fmt(
+        valores.get("GGn")
+    )
+
+    gtt = _fmt(
+        valores.get("GTT")
+    )
+
+    pexh = _fmt(
+        valores.get("Pexh")
+    )
+
+    ts = _fmt(
+        valores.get("Ts")
+    )
+
+    kmc = (
+        "-"
+        if kMc is None
+        else f"{kMc:.4f}"
+    )
+
+    kmt = (
+        "-"
+        if kMt is None
+        else f"{kMt:.4f}"
+    )
+
 
     html = f"""
     <html>
+
     <head>
+
     <style>
+
         body {{
             margin: 0;
             padding: 0;
@@ -66,124 +116,609 @@ def diagrama_proceso(valores, velocidad, kMc=None, kMt=None):
             display: block;
         }}
 
-        .box-title {{
+        .title {{
             fill: {DIAL};
             font-size: 15px;
             font-weight: bold;
         }}
 
-        .box-text {{
+        .text {{
             fill: {MIST};
             font-size: 13px;
         }}
 
-        .box-accent {{
+        .accent {{
             fill: {BRASS};
             font-size: 13px;
             font-weight: bold;
         }}
+
     </style>
+
     </head>
+
 
     <body>
 
-    <svg viewBox="0 0 1320 560" xmlns="http://www.w3.org/2000/svg">
 
-        <!-- PROCESO -->
-        <polygon points="20,120 180,150 180,260 20,290"
-                 fill="none" stroke="{MIST}" stroke-width="3"/>
+    <svg
+        viewBox="0 0 1300 520"
+        xmlns="http://www.w3.org/2000/svg"
+    >
 
-        <polygon points="180,140 390,170 390,240 180,270"
-                 fill="{SIGNAL}" stroke="{DIAL}" stroke-width="4"/>
 
-        <line x1="225" y1="146" x2="225" y2="264" stroke="{INK}" stroke-width="7"/>
-        <line x1="275" y1="154" x2="275" y2="256" stroke="{INK}" stroke-width="7"/>
-        <line x1="325" y1="162" x2="325" y2="248" stroke="{INK}" stroke-width="7"/>
+        <!-- ================================================ -->
+        <!-- ADMISIÓN -->
+        <!-- ================================================ -->
 
-        <rect x="410" y="145" width="260" height="120" rx="8"
-              fill="{HULL}" stroke="{DIAL}" stroke-width="4"/>
+        <polygon
+            points="
+                20,100
+                185,135
+                185,235
+                20,270
+            "
+            fill="none"
+            stroke="{MIST}"
+            stroke-width="3"
+        />
 
-        <rect x="455" y="170" width="155" height="72" rx="8"
-              fill="#374E52" stroke="{MIST}" stroke-width="2"/>
 
-        <polygon points="460,198 560,198 610,205 560,214 460,214"
-                 fill="{SIGNAL}"/>
+        <!-- flujo azul -->
 
-        <polygon points="455,206 485,182 477,202 510,206 477,212 485,232"
-                 fill="#F5C542"/>
+        <path
+            d="M30 130 C80 130 125 145 175 155"
+            fill="none"
+            stroke="#4F9BD8"
+            stroke-width="4"
+        />
 
-        <polygon points="695,170 865,140 865,270 695,240"
-                 fill="{BRASS}" stroke="{DIAL}" stroke-width="4"/>
+        <path
+            d="M30 185 C90 185 125 185 175 185"
+            fill="none"
+            stroke="#4F9BD8"
+            stroke-width="4"
+        />
 
-        <line x1="730" y1="162" x2="730" y2="248" stroke="{INK}" stroke-width="7"/>
-        <line x1="770" y1="155" x2="770" y2="255" stroke="{INK}" stroke-width="7"/>
-        <line x1="810" y1="148" x2="810" y2="262" stroke="{INK}" stroke-width="7"/>
+        <path
+            d="M30 240 C80 240 125 225 175 215"
+            fill="none"
+            stroke="#4F9BD8"
+            stroke-width="4"
+        />
 
-        <polygon points="865,140 1190,105 1190,305 865,270"
-                 fill="none" stroke="{MIST}" stroke-width="3"/>
 
-        <line x1="180" y1="205" x2="865" y2="205" stroke="#D8D8D8" stroke-width="7"/>
+        <!-- ================================================ -->
+        <!-- COMPRESOR -->
+        <!-- ================================================ -->
 
-        <!-- ETIQUETAS -->
-        <text x="95" y="335" text-anchor="middle" fill="{MIST}" font-size="18">Admisión</text>
-        <text x="285" y="335" text-anchor="middle" fill="{DIAL}" font-size="18" font-weight="bold">Compresor</text>
-        <text x="540" y="335" text-anchor="middle" fill="{DIAL}" font-size="18">Cámara de combustión</text>
-        <text x="780" y="335" text-anchor="middle" fill="{DIAL}" font-size="18" font-weight="bold">Turbina</text>
-        <text x="1030" y="335" text-anchor="middle" fill="{MIST}" font-size="18">Escape</text>
+        <polygon
+            points="
+                185,115
+                420,145
+                420,225
+                185,255
+            "
+            fill="#4E9FDB"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
 
-        <!-- CAJAS DE DATOS -->
 
-        <!-- Admisión -->
-        <rect x="20" y="380" width="220" height="145" rx="8"
-              fill="{HULL}" stroke="{STEEL}" stroke-width="2"/>
-        <text x="35" y="407" class="box-title">Admisión / entrada</text>
-        <text x="35" y="432" class="box-text">lp = {lp_txt}</text>
-        <text x="35" y="454" class="box-text">v = {v_txt} knots</text>
-        <text x="35" y="476" class="box-text">T1 = {t1_txt} °C</text>
-        <text x="35" y="498" class="box-text">P1 = {p1_txt} bar</text>
+        <line
+            x1="230"
+            y1="121"
+            x2="230"
+            y2="249"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="280"
+            y1="128"
+            x2="280"
+            y2="242"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="330"
+            y1="134"
+            x2="330"
+            y2="236"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="380"
+            y1="140"
+            x2="380"
+            y2="230"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
+        <!-- ================================================ -->
+        <!-- COMBUSTIÓN -->
+        <!-- ================================================ -->
+
+        <rect
+            x="430"
+            y="118"
+            width="270"
+            height="135"
+            rx="8"
+            fill="{HULL}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
+        <rect
+            x="475"
+            y="145"
+            width="170"
+            height="82"
+            rx="8"
+            fill="#374E52"
+            stroke="{MIST}"
+            stroke-width="2"
+        />
+
+
+        <polygon
+            points="
+                480,175
+                585,175
+                640,185
+                585,195
+                480,195
+            "
+            fill="{SIGNAL}"
+        />
+
+
+        <polygon
+            points="
+                475,185
+                505,160
+                497,181
+                530,185
+                497,192
+                505,215
+            "
+            fill="#F5C542"
+        />
+
+
+        <!-- ================================================ -->
+        <!-- TURBINA -->
+        <!-- ================================================ -->
+
+        <polygon
+            points="
+                720,145
+                920,110
+                920,260
+                720,225
+            "
+            fill="{BRASS}"
+            stroke="{DIAL}"
+            stroke-width="4"
+        />
+
+
+        <line
+            x1="760"
+            y1="138"
+            x2="760"
+            y2="232"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="810"
+            y1="130"
+            x2="810"
+            y2="240"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+        <line
+            x1="860"
+            y1="120"
+            x2="860"
+            y2="250"
+            stroke="{INK}"
+            stroke-width="7"
+        />
+
+
+        <!-- ================================================ -->
+        <!-- ESCAPE -->
+        <!-- ================================================ -->
+
+        <polygon
+            points="
+                920,110
+                1280,70
+                1280,300
+                920,260
+            "
+            fill="none"
+            stroke="{MIST}"
+            stroke-width="3"
+        />
+
+
+        <path
+            d="M935 150 C1010 140 1110 125 1260 120"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="4"
+        />
+
+        <path
+            d="M935 185 C1050 185 1150 185 1260 185"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="4"
+        />
+
+        <path
+            d="M935 220 C1010 230 1110 245 1260 250"
+            fill="none"
+            stroke="#B44B8A"
+            stroke-width="4"
+        />
+
+
+        <!-- EJE -->
+
+        <line
+            x1="185"
+            y1="185"
+            x2="920"
+            y2="185"
+            stroke="#D8D8D8"
+            stroke-width="7"
+        />
+
+
+        <!-- ================================================ -->
+        <!-- NOMBRES -->
+        <!-- ================================================ -->
+
+        <text
+            x="100"
+            y="335"
+            text-anchor="middle"
+            fill="{MIST}"
+            font-size="18"
+        >
+            Admisión
+        </text>
+
+
+        <text
+            x="300"
+            y="335"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="18"
+            font-weight="bold"
+        >
+            Compresor
+        </text>
+
+
+        <text
+            x="565"
+            y="335"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="18"
+        >
+            Cámara de combustión
+        </text>
+
+
+        <text
+            x="820"
+            y="335"
+            text-anchor="middle"
+            fill="{DIAL}"
+            font-size="18"
+            font-weight="bold"
+        >
+            Turbina
+        </text>
+
+
+        <text
+            x="1090"
+            y="335"
+            text-anchor="middle"
+            fill="{MIST}"
+            font-size="18"
+        >
+            Escape
+        </text>
+
+
+        <!-- ================================================ -->
+        <!-- TELEMETRÍA DEL PROCESO -->
+        <!-- ================================================ -->
+
+
+        <!-- Condición operacional -->
+
+        <rect
+            x="20"
+            y="370"
+            width="190"
+            height="105"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="35"
+            y="397"
+            class="title"
+        >
+            Operación
+        </text>
+
+        <text
+            x="35"
+            y="424"
+            class="text"
+        >
+            lp = {lp}
+        </text>
+
+        <text
+            x="35"
+            y="449"
+            class="text"
+        >
+            v = {v} knots
+        </text>
+
 
         <!-- Compresor -->
-        <rect x="270" y="380" width="220" height="145" rx="8"
-              fill="{HULL}" stroke="{STEEL}" stroke-width="2"/>
-        <text x="285" y="407" class="box-title">Compresor</text>
-        <text x="285" y="432" class="box-text">GGn = {ggn_txt} rpm</text>
-        <text x="285" y="454" class="box-text">T2 = {t2_txt} °C</text>
-        <text x="285" y="476" class="box-text">P2 = {p2_txt} bar</text>
-        <text x="285" y="498" class="box-accent">kMc = {kmc_txt}</text>
+
+        <rect
+            x="235"
+            y="370"
+            width="210"
+            height="120"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="250"
+            y="397"
+            class="title"
+        >
+            Salida compresor
+        </text>
+
+        <text
+            x="250"
+            y="424"
+            class="text"
+        >
+            T2 = {t2} °C
+        </text>
+
+        <text
+            x="250"
+            y="449"
+            class="text"
+        >
+            P2 = {p2} bar
+        </text>
+
+        <text
+            x="250"
+            y="474"
+            class="accent"
+        >
+            kMc = {kmc}
+        </text>
+
 
         <!-- Combustión -->
-        <rect x="520" y="380" width="220" height="145" rx="8"
-              fill="{HULL}" stroke="{STEEL}" stroke-width="2"/>
-        <text x="535" y="407" class="box-title">Combustión</text>
-        <text x="535" y="432" class="box-text">mf = {mf_txt} kg/s</text>
-        <text x="535" y="454" class="box-text">TIC = {tic_txt} %</text>
+
+        <rect
+            x="470"
+            y="370"
+            width="190"
+            height="105"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="485"
+            y="397"
+            class="title"
+        >
+            Combustión
+        </text>
+
+        <text
+            x="485"
+            y="424"
+            class="text"
+        >
+            mf = {mf} kg/s
+        </text>
+
+        <text
+            x="485"
+            y="449"
+            class="text"
+        >
+            TIC = {tic} %
+        </text>
+
+
+        <!-- Eje generador -->
+
+        <rect
+            x="685"
+            y="370"
+            width="200"
+            height="120"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="700"
+            y="397"
+            class="title"
+        >
+            Eje / generador
+        </text>
+
+        <text
+            x="700"
+            y="424"
+            class="text"
+        >
+            GGn = {ggn} rpm
+        </text>
+
+        <text
+            x="700"
+            y="449"
+            class="text"
+        >
+            GTn = {gtn} rpm
+        </text>
+
+        <text
+            x="700"
+            y="474"
+            class="text"
+        >
+            GTT = {gtt} kN m
+        </text>
+
 
         <!-- Turbina -->
-        <rect x="770" y="380" width="240" height="145" rx="8"
-              fill="{HULL}" stroke="{STEEL}" stroke-width="2"/>
-        <text x="785" y="407" class="box-title">Turbina</text>
-        <text x="785" y="432" class="box-text">GTn = {gtn_txt} rpm</text>
-        <text x="785" y="454" class="box-text">GTT = {gtt_txt} kN m</text>
-        <text x="785" y="476" class="box-text">T48 = {t48_txt} °C</text>
-        <text x="785" y="498" class="box-text">P48 = {p48_txt} bar</text>
-        <text x="785" y="520" class="box-accent">kMt = {kmt_txt}</text>
 
-        <!-- Escape / propulsión -->
-        <rect x="1040" y="380" width="250" height="145" rx="8"
-              fill="{HULL}" stroke="{STEEL}" stroke-width="2"/>
-        <text x="1055" y="407" class="box-title">Escape / propulsión</text>
-        <text x="1055" y="432" class="box-text">Pexh = {pexh_txt} bar</text>
-        <text x="1055" y="454" class="box-text">Ts = {ts_txt} kN m</text>
-        <text x="1055" y="476" class="box-text">Tp = {tp_txt}</text>
+        <rect
+            x="910"
+            y="370"
+            width="195"
+            height="120"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="925"
+            y="397"
+            class="title"
+        >
+            Salida turbina HP
+        </text>
+
+        <text
+            x="925"
+            y="424"
+            class="text"
+        >
+            T48 = {t48} °C
+        </text>
+
+        <text
+            x="925"
+            y="449"
+            class="text"
+        >
+            P48 = {p48} bar
+        </text>
+
+        <text
+            x="925"
+            y="474"
+            class="accent"
+        >
+            kMt = {kmt}
+        </text>
+
+
+        <!-- Escape -->
+
+        <rect
+            x="1130"
+            y="370"
+            width="150"
+            height="105"
+            rx="8"
+            fill="{HULL}"
+            stroke="{STEEL}"
+            stroke-width="2"
+        />
+
+        <text
+            x="1145"
+            y="397"
+            class="title"
+        >
+            Escape
+        </text>
+
+        <text
+            x="1145"
+            y="424"
+            class="text"
+        >
+            Pexh = {pexh}
+        </text>
+
+        <text
+            x="1145"
+            y="449"
+            class="text"
+        >
+            Ts = {ts}
+        </text>
+
 
     </svg>
 
     </body>
+
     </html>
     """
 
+
     components.html(
         html,
-        height=560,
+        height=520,
         scrolling=False
     )
