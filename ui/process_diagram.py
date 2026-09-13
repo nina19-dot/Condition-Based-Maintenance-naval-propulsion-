@@ -264,12 +264,12 @@ def diagrama_proceso(
         />
 
 
-        <!-- Solo nombres T1 y T2 -->
+        <!-- Solo nombres T1 y P2 -->
         <!-- Sin valores y sin recuadro -->
 
         <text
-            x="65"
-            y="130"
+            x="75"
+            y="120"
             class="sensor-blue"
         >
             T1
@@ -277,10 +277,10 @@ def diagrama_proceso(
 
         <text
             x="150"
-            y="275"
+            y="290"
             class="sensor-blue"
         >
-            T2
+            P1
         </text>
 
 
@@ -553,19 +553,6 @@ def diagrama_proceso(
         >
             Turbina
         </text>
-
-
-        <!-- Salida turbina HP debajo de Turbina -->
-
-        <text
-            x="865"
-            y="392"
-            text-anchor="middle"
-            class="stage-subtitle"
-        >
-            Salida turbina HP
-        </text>
-
 
         <text
             x="1180"
