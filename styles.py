@@ -2,83 +2,152 @@
 
 import streamlit as st
 
+from config import (
+    INK,
+    HULL,
+    DIAL,
+    BRASS,
+    SIGNAL,
+    SEA,
+    MIST,
+    STEEL
+)
+
+
 def load_css():
-    st.markdown("""
-    <style>
-    .main {
-        background-color: #f6f8fb;
-    }
 
-    .block-container {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        max-width: 1400px;
-    }
+    st.markdown(
+        f"""
+        <style>
 
-    .app-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 0.2rem;
-    }
+        @import url(
+        'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap'
+        );
 
-    .app-subtitle {
-        color: #475569;
-        margin-bottom: 1rem;
-    }
+        /* Fondo general */
+        [data-testid="stAppViewContainer"] {{
+            background: {INK};
+        }}
 
-    .section-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #0f172a;
-        margin-bottom: 0.5rem;
-    }
+        [data-testid="stHeader"] {{
+            background: transparent;
+        }}
 
-    .card {
-        background: white;
-        border-radius: 18px;
-        padding: 18px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        border: 1px solid #e2e8f0;
-        margin-bottom: 1rem;
-    }
+        html, body, [class*="css"] {{
+            font-family: 'Archivo', sans-serif;
+        }}
 
-    .metric-label {
-        color: #64748b;
-        font-size: 0.9rem;
-    }
+        /* Ancho de página */
+        .block-container {{
+            max-width: 1450px;
+            padding-top: 1.3rem;
+            padding-bottom: 2rem;
+        }}
 
-    .metric-value {
-        color: #0f172a;
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
+        /* Texto */
+        h1, h2, h3, h4, p, label {{
+            color: {DIAL} !important;
+        }}
 
-    .small-note {
-        color: #64748b;
-        font-size: 0.85rem;
-    }
+        h1 {{
+            font-weight: 800 !important;
+            letter-spacing: -0.025em;
+        }}
 
-    .component-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 0.2rem;
-    }
+        h2 {{
+            font-weight: 700 !important;
+        }}
 
-    .status-normal {
-        color: #15803d;
-        font-weight: 600;
-    }
+        /* Portada */
+        .matricula {{
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            color: {BRASS} !important;
+            letter-spacing: 0.07em;
+        }}
 
-    .status-warning {
-        color: #b45309;
-        font-weight: 600;
-    }
+        .titular {{
+            font-size: clamp(2.0rem, 4vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.05;
+            color: {DIAL} !important;
+            margin-bottom: 12px;
+        }}
 
-    .status-critical {
-        color: #b91c1c;
-        font-weight: 700;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        .entrada {{
+            color: {MIST} !important;
+            font-size: 1.0rem;
+            line-height: 1.55;
+        }}
+
+        /* Tarjetas */
+        .naval-card {{
+            background: {HULL};
+            border: 1px solid {STEEL};
+            border-radius: 8px;
+            padding: 18px;
+            height: 100%;
+        }}
+
+        .component-title {{
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: {DIAL} !important;
+            margin-bottom: 4px;
+        }}
+
+        .component-subtitle {{
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.76rem;
+            color: {MIST} !important;
+        }}
+
+        /* Métricas */
+        [data-testid="stMetricValue"] {{
+            color: {BRASS} !important;
+            font-family: 'IBM Plex Mono', monospace;
+        }}
+
+        [data-testid="stMetricLabel"] p {{
+            color: {MIST} !important;
+        }}
+
+        /* Estado */
+        .status {{
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 6px;
+        }}
+
+        /* Sensores */
+        .sensor-tag {{
+            display: inline-block;
+            border: 1px solid {STEEL};
+            color: {SEA};
+            padding: 5px 8px;
+            margin: 3px;
+            border-radius: 3px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.74rem;
+        }}
+
+        .small-note {{
+            color: {MIST} !important;
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }}
+
+        hr {{
+            border-color: {STEEL} !important;
+        }}
+
+        footer, #MainMenu {{
+            visibility: hidden;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
