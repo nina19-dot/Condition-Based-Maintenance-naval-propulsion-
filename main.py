@@ -4,9 +4,7 @@ import streamlit as st
 
 from styles import load_css
 
-from data_utils import (
-    cargar_datos
-)
+from data_utils import cargar_datos
 
 from model_utils import (
     entrenar_modelos,
@@ -15,13 +13,9 @@ from model_utils import (
     predecir_kMt
 )
 
-from ui.plant_map import (
-    esquema_planta
-)
+from ui.plant_map import esquema_planta
 
-from ui.telemetry import (
-    panel_telemetria
-)
+from ui.telemetry import panel_telemetria
 
 from ui.results import (
     resultado_compresor,
@@ -44,7 +38,7 @@ load_css()
 
 
 # ============================================================
-# SESSION STATE
+# VARIABLES DE SESIÓN
 # ============================================================
 
 if "kMc" not in st.session_state:
@@ -67,109 +61,85 @@ with st.spinner(
     "Inicializando modelos de degradación..."
 ):
 
-    rf_kMc, rf_kMt = (
-        entrenar_modelos(data)
-    )
+    rf_kMc, rf_kMt = entrenar_modelos(data)
 
 
 # ============================================================
 # PORTADA
 # ============================================================
 
-left, right = st.columns(
-    [1.20, 0.80],
-    gap="large"
+st.markdown(
+    """
+    <p class="matricula">
+        CONDITION-BASED MAINTENANCE · NAVAL PROPULSION
+    </p>
+
+    <p class="titular">
+        Estimación del estado de degradación
+        de una planta de propulsión naval
+    </p>
+
+    <p class="entrada">
+        La plataforma utiliza las condiciones de operación
+        y las variables de telemetría de la planta para
+        estimar el coeficiente de degradación del compresor
+        kMc y de la turbina kMt.
+    </p>
+    """,
+    unsafe_allow_html=True
 )
 
-with left:
-
-    st.markdown(
-        """
-        <p class="matricula">
-            CONDITION-BASED MAINTENANCE · NAVAL PROPULSION
-        </p>
-
-        <p class="titular">
-            Estimación del estado de degradación
-            de una planta de propulsión naval
-        </p>
-
-        <p class="entrada">
-            La plataforma utiliza las variables de
-            telemetría de la planta para estimar el
-            coeficiente de degradación del compresor
-            kMc y de la turbina kMt mediante modelos
-            Random Forest Regressor.
-        </p>
-        """,
-        unsafe_allow_html=True
-    )
+st.divider()
 
 
-with right:
+# ============================================================
+# PLANTA CODLAG
+# ============================================================
 
-    st.markdown(
-        """
-        <div class="naval-card">
+st.header(
+    "Planta de propulsión CODLAG"
+)
 
-        <div class="component-title">
-        Modelo seleccionado
-        </div>
+st.markdown(
+    """
+    <p class="section-description">
+        Diagrama general del sistema de propulsión.
+        Al realizar una estimación se resaltará el componente
+        que está siendo analizado.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
-        <p class="small-note">
-        Random Forest Regressor
-        </p>
-
-        <hr>
-
-        <p class="small-note">
-        kMc · R² prueba = 0.9964
-        </p>
-
-        <p class="small-note">
-        kMt · R² prueba = 0.9930
-        </p>
-
-        <p class="small-note">
-        11,934 observaciones simuladas
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+esquema_planta(
+    st.session_state.active_component
+)
 
 
 st.divider()
 
 
 # ============================================================
-# PLANTA + TELEMETRÍA
+# TELEMETRÍA
 # ============================================================
 
 st.header(
-    "Planta CODLAG y condición operacional"
+    "Condiciones de operación y telemetría"
 )
 
-planta_col, control_col = st.columns(
-    [1.45, 1],
-    gap="large"
+st.markdown(
+    """
+    <p class="section-description">
+        Selecciona la velocidad de operación y modifica
+        las lecturas de los sensores. Los límites de cada
+        variable cambian automáticamente de acuerdo con
+        los valores observados para esa velocidad.
+    </p>
+    """,
+    unsafe_allow_html=True
 )
 
-
-with planta_col:
-
-    esquema_planta(
-        st.session_state.active_component
-    )
-
-
-with control_col:
-
-    velocidad, valores = (
-        panel_telemetria(data)
-    )
-
+velocidad, valores = panel_telemetria(data)
 
 observacion = crear_observacion(
     velocidad,
@@ -181,7 +151,15 @@ observacion = crear_observacion(
 # BOTONES
 # ============================================================
 
-b1, b2, b3 = st.columns(3)
+st.markdown(
+    "<div style='height:15px'></div>",
+    unsafe_allow_html=True
+)
+
+b1, b2, b3 = st.columns(
+    [1, 1, 1],
+    gap="medium"
+)
 
 
 with b1:
@@ -265,6 +243,17 @@ st.header(
     "Estado estimado de los componentes"
 )
 
+st.markdown(
+    """
+    <p class="section-description">
+        Cada bloque muestra el componente dentro de la
+        turbina de gas, su coeficiente estimado y el nivel
+        relativo de degradación.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
 comp_col, turb_col = st.columns(
     2,
     gap="large"
@@ -286,108 +275,22 @@ with turb_col:
 
 
 # ============================================================
-# METODOLOGÍA
-# ============================================================
-
-st.divider()
-
-st.header(
-    "Metodología"
-)
-
-metodo1, metodo2, metodo3 = (
-    st.columns(3)
-)
-
-
-with metodo1:
-
-    st.markdown(
-        """
-        <div class="naval-card">
-
-        <div class="component-title">
-        Preparación
-        </div>
-
-        <p class="small-note">
-        Se eliminaron T1 y P1 por ser
-        constantes y Tp por contener
-        exactamente la misma información
-        que Ts.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-with metodo2:
-
-    st.markdown(
-        """
-        <div class="naval-card">
-
-        <div class="component-title">
-        Aprendizaje supervisado
-        </div>
-
-        <p class="small-note">
-        Dos Random Forest Regressor
-        independientes estiman kMc y kMt
-        utilizando doce variables de
-        telemetría y operación.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-with metodo3:
-
-    st.markdown(
-        """
-        <div class="naval-card">
-
-        <div class="component-title">
-        Decisión
-        </div>
-
-        <p class="small-note">
-        La estimación se convierte en un
-        indicador relativo de degradación
-        para apoyar decisiones de inspección
-        y mantenimiento.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# ============================================================
 # LIMITACIONES
 # ============================================================
 
 st.divider()
 
 st.header(
-    "Alcance y limitaciones"
+    "Alcance de la estimación"
 )
 
 st.markdown(
     """
-    - Los datos provienen de un simulador numérico de una planta
-      de propulsión naval.
-    - Los elevados valores de R² corresponden principalmente a
-      interpolación dentro del espacio simulado.
-    - Los umbrales de mantenimiento mostrados por la plataforma
-      son criterios propuestos para fines demostrativos.
-    - Una aplicación operacional requeriría validación con datos
-      reales y criterios definidos por ingeniería de mantenimiento.
+    Los resultados corresponden al espacio de operación
+    representado por el simulador. Los indicadores de
+    mantenimiento son criterios demostrativos y una
+    implementación real requeriría validación con datos
+    operacionales y límites definidos por ingeniería de
+    mantenimiento.
     """
 )
