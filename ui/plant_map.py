@@ -125,12 +125,25 @@ def esquema_planta(
         }}
 
         .connector {{
-            stroke: {MIST};
-            stroke-width: 2;
-            stroke-dasharray: 7 6;
-            fill: none;
-        }}
+    stroke: {MIST};
+    stroke-width: 3;
+    stroke-dasharray: 8 6;
+    fill: none;
+}}
 
+.connector-signal {{
+    stroke: {SIGNAL};
+    stroke-width: 3;
+    stroke-dasharray: 8 6;
+    fill: none;
+}}
+
+.connector-turbine {{
+    stroke: {turb_color};
+    stroke-width: 3;
+    stroke-dasharray: 8 6;
+    fill: none;
+}}
     </style>
 
     </head>
@@ -603,26 +616,51 @@ def esquema_planta(
         </g>
 
 
-        <!-- línea a los ejes/hélices -->
+<!-- ================================================= -->
+<!-- CONEXIÓN TORQUE HÉLICES -->
+<!-- ================================================= -->
 
-        <path
-            d="
-                M 230 430
-                L 270 430
-                L 270 285
-                L 130 285
-            "
-            class="connector"
-        />
+<!-- Sale de la caja -->
+<path
+    d="
+        M 230 430
+        L 260 430
+    "
+    class="connector"
+/>
 
-        <path
-            d="
-                M 270 430
-                L 270 650
-                L 130 650
-            "
-            class="connector"
-        />
+<!-- Rama hacia hélice superior -->
+<path
+    d="
+        M 260 430
+        L 260 285
+        L 125 285
+    "
+    class="connector"
+/>
+
+<!-- Rama hacia hélice inferior -->
+<path
+    d="
+        M 260 430
+        L 260 650
+        L 125 650
+    "
+    class="connector"
+/>
+<circle
+    cx="125"
+    cy="285"
+    r="5"
+    fill="{MIST}"
+/>
+
+<circle
+    cx="125"
+    cy="650"
+    r="5"
+    fill="{MIST}"
+/>
 
 
         <!-- ================================================= -->
@@ -670,12 +708,21 @@ def esquema_planta(
 
 
         <path
-            d="
-                M 615 155
-                L 615 385
-            "
-            class="connector"
-        />
+        d="
+        M 615 155
+        L 680 155
+        L 680 345
+        L 635 345
+        L 635 400
+    "
+    class="connector-signal"
+/>
+    <circle
+    cx="635"
+    cy="400"
+    r="5"
+    fill="{SIGNAL}"
+/>
 
 
         <!-- ================================================= -->
@@ -829,14 +876,22 @@ def esquema_planta(
         </g>
 
 
-        <path
-            d="
-                M 795 750
-                L 795 560
-                L 795 515
-            "
-            class="connector"
-        />
+       <path
+    d="
+        M 795 750
+        L 795 705
+        L 900 705
+        L 900 455
+        L 850 455
+    "
+    class="connector-turbine"
+/>
+    <circle
+    cx="850"
+    cy="455"
+    r="5"
+    fill="{turb_color}"
+/>
 
 
         <!-- ================================================= -->
@@ -932,14 +987,21 @@ def esquema_planta(
         <!-- línea de operación hacia el sistema -->
 
         <path
-            d="
-                M 1375 450
-                L 1325 450
-                L 1325 285
-                L 1410 285
-            "
-            class="connector"
-        />
+    d="
+        M 1375 450
+        L 1335 450
+        L 1335 350
+        L 1260 350
+    "
+    class="connector"
+/>
+
+<circle
+    cx="1260"
+    cy="350"
+    r="5"
+    fill="{MIST}"
+/>
 
 
     </svg>
