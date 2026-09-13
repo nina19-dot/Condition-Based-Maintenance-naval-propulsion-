@@ -125,7 +125,6 @@ st.divider()
 
 # ============================================================
 # PLANTA CODLAG
-# AHORA VA DEBAJO DE LA TELEMETRÍA
 # ============================================================
 
 st.header("Planta de propulsión CODLAG")
@@ -149,28 +148,76 @@ esquema_planta(
 st.divider()
 
 # ============================================================
-# BOTONES
+# BOTONES DE ANÁLISIS
 # ============================================================
 
 b1, b2, b3 = st.columns(3)
 
 with b1:
-    if st.button("Analizar compresor", use_container_width=True):
-        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
+
+    if st.button(
+        "Analizar compresor",
+        use_container_width=True
+    ):
+
+        # Calcular solamente kMc
+        st.session_state.kMc = predecir_kMc(
+            rf_kMc,
+            observacion
+        )
+
+        # Borrar resultado anterior de turbina
+        st.session_state.kMt = None
+
+        # Indicar componente activo
         st.session_state.active_component = "compressor"
+
         st.rerun()
+
 
 with b2:
-    if st.button("Analizar turbina", use_container_width=True):
-        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
+
+    if st.button(
+        "Analizar turbina",
+        use_container_width=True
+    ):
+
+        # Calcular solamente kMt
+        st.session_state.kMt = predecir_kMt(
+            rf_kMt,
+            observacion
+        )
+
+        # Borrar resultado anterior del compresor
+        st.session_state.kMc = None
+
+        # Indicar componente activo
         st.session_state.active_component = "turbine"
+
         st.rerun()
 
+
 with b3:
-    if st.button("Analizar sistema completo", use_container_width=True):
-        st.session_state.kMc = predecir_kMc(rf_kMc, observacion)
-        st.session_state.kMt = predecir_kMt(rf_kMt, observacion)
+
+    if st.button(
+        "Analizar sistema completo",
+        use_container_width=True
+    ):
+
+        # Calcular ambos
+        st.session_state.kMc = predecir_kMc(
+            rf_kMc,
+            observacion
+        )
+
+        st.session_state.kMt = predecir_kMt(
+            rf_kMt,
+            observacion
+        )
+
+        # Ambos componentes activos
         st.session_state.active_component = "both"
+
         st.rerun()
 
 
@@ -207,21 +254,44 @@ st.divider()
 
 st.header("Estado estimado de los componentes")
 
-comp_col, turb_col = st.columns(
-    2,
-    gap="large"
-)
 
-
-with comp_col:
+if st.session_state.active_component == "compressor":
 
     resultado_compresor(
         st.session_state.kMc
     )
 
 
-with turb_col:
+elif st.session_state.active_component == "turbine":
 
     resultado_turbina(
         st.session_state.kMt
+    )
+
+
+elif st.session_state.active_component == "both":
+
+    comp_col, turb_col = st.columns(
+        2,
+        gap="large"
+    )
+
+    with comp_col:
+
+        resultado_compresor(
+            st.session_state.kMc
+        )
+
+    with turb_col:
+
+        resultado_turbina(
+            st.session_state.kMt
+        )
+
+
+else:
+
+    st.info(
+        "Selecciona un análisis para obtener "
+        "el estado estimado del componente."
     )
