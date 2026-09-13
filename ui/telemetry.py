@@ -35,4 +35,4 @@ def panel_telemetria(data):
                     step=float(step)
                 )
 
-    return velocidad, valore
+    return velocidad, valores
