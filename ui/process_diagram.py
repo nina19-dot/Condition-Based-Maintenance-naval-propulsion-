@@ -594,7 +594,7 @@ def diagrama_proceso(
                 y="482"
                 class="box-text"
             >
-                T2 = {t2} °C
+                T2 = {t2} K
             </text>
 
             <text
@@ -662,7 +662,6 @@ def diagrama_proceso(
 
         <!-- ================================================= -->
         <!-- TELEMETRÍA TURBINA -->
-        <!-- Debajo del nombre Turbina -->
         <!-- ================================================= -->
 
         <g filter="url(#shadow)">
@@ -691,7 +690,7 @@ def diagrama_proceso(
                 y="482"
                 class="box-text"
             >
-                T48 = {t48} °C
+                T48 = {t48} K
             </text>
 
             <text
