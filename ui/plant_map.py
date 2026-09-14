@@ -784,7 +784,7 @@ def esquema_planta(
                 y="820"
                 class="box-text"
             >
-                T2 = {t2} °C
+                T2 = {t2} K
             </text>
 
             <text
@@ -834,7 +834,7 @@ def esquema_planta(
                 y="845"
                 class="box-text"
             >
-                GTT = {gtt} kN m
+                GTT = {gtt} N m
             </text>
 
             <text
@@ -842,7 +842,7 @@ def esquema_planta(
                 y="875"
                 class="box-text"
             >
-                T48 = {t48} °C | P48 = {p48} bar
+                T48 = {t48} K | P48 = {p48} bar
             </text>
 
         </g>
