@@ -58,6 +58,15 @@ data = cargar_datos()
 
 with st.spinner("Inicializando modelos de degradación..."):
     rf_kMc, rf_kMt = entrenar_modelos(data)
+# ============================================================
+# PORTADA
+# ============================================================
+st.set_page_config(
+    page_title="Mantenimiento Basado en Condición",
+    layout="wide"
+)
+
+load_css()
 
 # ============================================================
 # ENCABEZADO PRINCIPAL
@@ -65,35 +74,22 @@ with st.spinner("Inicializando modelos de degradación..."):
 
 st.markdown(
     """
-    <section class="hero-section">
+<section class="hero-section">
+<div class="hero-kicker">MANTENIMIENTO BASADO EN CONDICIÓN · PROPULSIÓN NAVAL</div>
 
-        <div class="hero-kicker">
-            MANTENIMIENTO BASADO EN CONDICIÓN · PROPULSIÓN NAVAL
-        </div>
+<div class="hero-title">Mantenimiento Basado en Condición para Propulsión Naval</div>
 
-        <div class="hero-title">
-            Mantenimiento Basado en Condición para Propulsión Naval
-        </div>
+<div class="hero-subtitle">
+Estimación del estado de degradación del compresor y la turbina mediante telemetría operativa
+</div>
 
-        <div class="hero-subtitle">
-            Estimación del estado de degradación del compresor
-            y la turbina mediante telemetría operativa
-        </div>
-
-        <div class="hero-description">
-            Esta plataforma analiza las condiciones de operación y las
-            variables de telemetría de una planta de propulsión naval para
-            estimar el nivel de degradación del compresor y de la turbina.
-            Su propósito es apoyar el diagnóstico del sistema y la toma de
-            decisiones de monitoreo, inspección y mantenimiento preventivo.
-        </div>
-
-    </section>
+<div class="hero-description">
+Esta plataforma analiza las condiciones de operación y las variables de telemetría de una planta de propulsión naval para estimar el nivel de degradación del compresor y de la turbina. Su propósito es apoyar el diagnóstico del sistema y la toma de decisiones de monitoreo, inspección y mantenimiento preventivo.
+</div>
+</section>
     """,
     unsafe_allow_html=True
 )
-
-
 # ============================================================
 # PLANTA CODLAG
 # ============================================================
