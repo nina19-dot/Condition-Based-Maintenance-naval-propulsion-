@@ -300,7 +300,7 @@ else:
 # Grafica 
 # ============================================================
 st.markdown(
-    "## Impacto operativo de la degradación"
+    "## Condición operativa de combustible y temperatura"
 )
 
 st.write(
