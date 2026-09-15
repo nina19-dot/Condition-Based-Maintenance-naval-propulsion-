@@ -632,7 +632,7 @@ def grafica_diagnostico(
         margin=dict(
             l=70,
             r=85,
-            t=115,
+            t=145,
             b=70
         ),
 
@@ -646,17 +646,24 @@ def grafica_diagnostico(
         ),
 
         legend=dict(
-        orientation="h",
+    orientation="h",
 
-        yanchor="top",
-        y=0.96,
+    # Colocar la leyenda arriba del área de la gráfica
+    yanchor="bottom",
+    y=1.015,
 
-        xanchor="left",
-        x=0.01,
+    xanchor="left",
+    x=0.01,
 
-        font=dict(
+    font=dict(
         size=12
-        ),
+    ),
+
+    bgcolor="rgba(255,255,255,0.78)",
+
+    bordercolor=MIST,
+    borderwidth=1
+),
     
         bgcolor="rgba(255,255,255,0.78)",
 
