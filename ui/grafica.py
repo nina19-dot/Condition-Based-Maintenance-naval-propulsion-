@@ -138,7 +138,7 @@ def tarjeta_estado(
         f'background:{fondo};'
         f'border:2px solid {borde};'
         f'border-radius:12px;'
-        f'padding:18px 20px;'
+        f'padding:20px 22px;'
         f'margin-bottom:16px;'
         f'">'
 
@@ -146,30 +146,25 @@ def tarjeta_estado(
         f'color:{DIAL};'
         f'font-size:20px;'
         f'font-weight:800;'
-        f'margin-bottom:9px;'
+        f'margin-bottom:14px;'
         f'">'
         f'{icono} {titulo}'
         f'</div>'
 
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:17px;'
+        f'font-size:18px;'
         f'font-weight:800;'
-        f'margin-bottom:11px;'
+        f'margin-bottom:16px;'
         f'">'
         f'{estado}'
         f'</div>'
 
         f'<div style="'
         f'color:{MIST};'
-        f'font-size:14px;'
+        f'font-size:15px;'
         f'line-height:1.55;'
         f'">'
-        f'Actual: <b>{valor_actual:.2f} {unidad}</b><br>'
-        f'Línea de desgaste: '
-        f'<b>{valor_desgaste:.2f} {unidad}</b><br>'
-        f'Límite crítico: '
-        f'<b>{limite_critico:.2f} {unidad}</b><br><br>'
         f'{mensaje}'
         f'</div>'
 
@@ -180,7 +175,6 @@ def tarjeta_estado(
         html,
         unsafe_allow_html=True
     )
-
 
 # ============================================================
 # TARJETA DE ESTADO GLOBAL
