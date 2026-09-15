@@ -632,7 +632,7 @@ def grafica_diagnostico(
         margin=dict(
             l=70,
             r=85,
-            t=145,
+            t=115,
             b=70
         ),
 
