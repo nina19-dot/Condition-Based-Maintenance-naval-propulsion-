@@ -612,7 +612,7 @@ def grafica_diagnostico(
         title=dict(
             text="Efecto de la degradación según la velocidad",
             x=0.02,
-            y=0.955,
+            y=0.93,
             xanchor="left",
             yanchor="top",
             font=dict(
