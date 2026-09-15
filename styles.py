@@ -164,46 +164,33 @@ def load_css():
         /* =========================================================
            ENCABEZADOS DE SECCIÓN
            ========================================================= */
-        
-        .section-header {{
-            max-width: 1250px;
-            margin-bottom: 24px;
-            padding-top: 10px;
+        .codlag-header {{
+            width: 100%;
+            max-width: none;
+            padding: 8px 0 20px 0;
+            margin-bottom: 18px;
         }}
         
-        .section-kicker {{
-            color: {BRASS};
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }}
-        
-        .section-title {{
+        .codlag-title {{
             color: {DIAL};
-            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-size: clamp(1.8rem, 2.8vw, 2.6rem);
             font-weight: 800;
-            line-height: 1.12;
+            line-height: 1.15;
             letter-spacing: -0.02em;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }}
         
-        .section-subtitle {{
-            color: {DIAL};
-            font-size: 1.15rem;
-            font-weight: 700;
-            line-height: 1.45;
-            margin-bottom: 10px;
-            max-width: 1050px;
-        }}
-        
-        .section-text {{
+        .codlag-description {{
             color: {MIST};
             font-size: 1rem;
-            line-height: 1.65;
-            max-width: 1150px;
+            font-weight: 400;
+            line-height: 1.7;
+        
+            /* Permite utilizar todo el ancho disponible */
+            width: 100%;
+            max-width: none;
+        
+            margin: 0;
         }}
 
         /* =========================================================
