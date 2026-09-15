@@ -134,7 +134,7 @@ def tarjeta_estado(
     )
 
     # Texto que se mostrará en la tarjeta individual
-    if estado == "SERVICIO PREVENTIVO GENERAL":
+    if estado == "SERVICIO PREVENTIVO":
 
         estado_visible = "LÍNEA DE DESGASTE ALCANZADA"
 
@@ -238,20 +238,20 @@ def tarjeta_estado_global(
 
     # SERVICIO PREVENTIVO
     elif (
-        estado_mf == "SERVICIO PREVENTIVO GENERAL"
-        or estado_t48 == "SERVICIO PREVENTIVO GENERAL"
+        estado_mf == "SERVICIO PREVENTIVO"
+        or estado_t48 == "SERVICIO PREVENTIVO"
     ):
 
         fondo = "#544019"
         borde = BRASS
         icono = "⚠"
 
-        titulo = "SERVICIO PREVENTIVO"
+        titulo = "SERVICIO PREVENTIVO GENERAL"
 
         mensaje = (
             "Al menos una variable alcanzó "
             "su línea de desgaste. "
-            "Programar servicio preventivo."
+            "Programar servicio preventivo general."
         )
 
 
