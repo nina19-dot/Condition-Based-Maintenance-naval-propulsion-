@@ -75,7 +75,7 @@ load_css()
 st.markdown(
     """
 <section class="hero-section">
-<div class="hero-kicker">MANTENIMIENTO BASADO EN CONDICIÓN · PROPULSIÓN NAVAL</div>
+<div class="hero-kicker">MANTENIMIENTO · PROPULSIÓN NAVAL</div>
 
 <div class="hero-title">Mantenimiento Basado en Condición para Propulsión Naval</div>
 
