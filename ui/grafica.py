@@ -133,39 +133,71 @@ def tarjeta_estado(
         limite_critico
     )
 
+    # Texto que se mostrará en la tarjeta individual
+    if estado == "SERVICIO PREVENTIVO":
+
+        estado_visible = "LÍNEA DE DESGASTE ALCANZADA"
+
+        mensaje_visible = (
+            "La condición actual alcanzó "
+            "la línea de desgaste."
+        )
+
+    elif estado == "CRÍTICO":
+
+        estado_visible = "ESTADO CRÍTICO"
+
+        mensaje_visible = (
+            "La condición actual superó "
+            "el límite crítico."
+        )
+
+    else:
+
+        estado_visible = "NORMAL"
+
+        mensaje_visible = (
+            "La condición actual se mantiene "
+            "por debajo de la línea de desgaste."
+        )
+
+
     html = (
         f'<div style="'
         f'background:{fondo};'
         f'border:2px solid {borde};'
         f'border-radius:12px;'
-        f'padding:20px 22px;'
-        f'margin-bottom:16px;'
+        f'padding:16px 18px;'
+        f'margin-bottom:14px;'
         f'">'
 
+        # Título
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:20px;'
+        f'font-size:17px;'
         f'font-weight:800;'
-        f'margin-bottom:14px;'
+        f'margin-bottom:10px;'
         f'">'
         f'{icono} {titulo}'
         f'</div>'
 
+        # Estado
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:18px;'
+        f'font-size:15px;'
         f'font-weight:800;'
-        f'margin-bottom:16px;'
+        f'margin-bottom:12px;'
         f'">'
-        f'{estado}'
+        f'{estado_visible}'
         f'</div>'
 
+        # Mensaje
         f'<div style="'
         f'color:{MIST};'
-        f'font-size:15px;'
-        f'line-height:1.55;'
+        f'font-size:13px;'
+        f'line-height:1.5;'
         f'">'
-        f'{mensaje}'
+        f'{mensaje_visible}'
         f'</div>'
 
         f'</div>'
@@ -185,10 +217,7 @@ def tarjeta_estado_global(
     estado_t48
 ):
 
-    # --------------------------------------------------------
     # CRÍTICO
-    # --------------------------------------------------------
-
     if (
         estado_mf == "CRÍTICO"
         or estado_t48 == "CRÍTICO"
@@ -201,15 +230,13 @@ def tarjeta_estado_global(
         titulo = "ESTADO CRÍTICO"
 
         mensaje = (
-            "Al menos una variable superó su límite crítico. "
-            "Detener la máquina y realizar las reparaciones "
-            "correspondientes antes de continuar la operación."
+            "Detener la máquina y realizar "
+            "las reparaciones correspondientes "
+            "antes de continuar la operación."
         )
 
-    # --------------------------------------------------------
-    # SERVICIO PREVENTIVO
-    # --------------------------------------------------------
 
+    # SERVICIO PREVENTIVO
     elif (
         estado_mf == "SERVICIO PREVENTIVO"
         or estado_t48 == "SERVICIO PREVENTIVO"
@@ -222,15 +249,13 @@ def tarjeta_estado_global(
         titulo = "SERVICIO PREVENTIVO"
 
         mensaje = (
-            "Al menos una variable alcanzó o superó "
-            "su línea de desgaste. Programar servicio "
-            "preventivo antes de llegar al estado crítico."
+            "Al menos una variable alcanzó "
+            "su línea de desgaste. "
+            "Programar servicio preventivo."
         )
 
-    # --------------------------------------------------------
-    # NORMAL
-    # --------------------------------------------------------
 
+    # NORMAL
     else:
 
         fondo = "#123F38"
@@ -244,27 +269,28 @@ def tarjeta_estado_global(
             "permanecen por debajo de sus líneas de desgaste."
         )
 
+
     html = (
         f'<div style="'
         f'background:{fondo};'
         f'border:2px solid {borde};'
         f'border-radius:12px;'
-        f'padding:17px 20px;'
-        f'margin-top:6px;'
+        f'padding:15px 17px;'
+        f'margin-top:5px;'
         f'">'
 
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:18px;'
+        f'font-size:16px;'
         f'font-weight:800;'
-        f'margin-bottom:8px;'
+        f'margin-bottom:7px;'
         f'">'
         f'{icono} {titulo}'
         f'</div>'
 
         f'<div style="'
         f'color:{MIST};'
-        f'font-size:14px;'
+        f'font-size:13px;'
         f'line-height:1.5;'
         f'">'
         f'{mensaje}'
@@ -1039,7 +1065,17 @@ def grafica_diagnostico(
     with col_estado:
 
         st.markdown(
-            "### Condición actual"
+            f"""
+            <div style="
+                color:{DIAL};
+                font-size:21px;
+                font-weight:800;
+                margin-bottom:14px;
+            ">
+                Condición actual
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
 
