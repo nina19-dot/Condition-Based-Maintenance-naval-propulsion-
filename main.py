@@ -58,15 +58,6 @@ data = cargar_datos()
 
 with st.spinner("Inicializando modelos de degradación..."):
     rf_kMc, rf_kMt = entrenar_modelos(data)
-# ============================================================
-# PORTADA
-# ============================================================
-st.set_page_config(
-    page_title="Mantenimiento Basado en Condición",
-    layout="wide"
-)
-
-load_css()
 
 # ============================================================
 # ENCABEZADO PRINCIPAL
