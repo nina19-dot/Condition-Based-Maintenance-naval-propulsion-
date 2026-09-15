@@ -609,13 +609,8 @@ def grafica_diagnostico(
     # ========================================================
 
     fig.update_layout(
-
         title=dict(
-            text=(
-                "Efecto de la degradación "
-                "según la velocidad"
-            ),
-
+            text="Efecto de la degradación según la velocidad",
             x=0.02,
             y=0.98,
             xanchor="left",
@@ -646,30 +641,20 @@ def grafica_diagnostico(
         ),
 
         legend=dict(
-        orientation="h",
+            orientation="h",
+            yanchor="bottom",
+            y=1.015,
+            xanchor="left",
+            x=0.01,
 
-         # Colocar la leyenda arriba del área de la gráfica
-        yanchor="bottom",
-        y=1.015,
+            font=dict(
+                size=12
+            ),
 
-        xanchor="left",
-        x=0.01,
-
-        font=dict(
-        size=12
+            bgcolor="rgba(255,255,255,0.78)",
+            bordercolor=MIST,
+            borderwidth=1
         ),
-
-    bgcolor="rgba(255,255,255,0.78)",
-
-    bordercolor=MIST,
-    borderwidth=1
-),
-    
-        bgcolor="rgba(255,255,255,0.78)",
-
-        bordercolor=MIST,
-        borderwidth=1
-    ),
 
         hovermode="x unified"
     )
