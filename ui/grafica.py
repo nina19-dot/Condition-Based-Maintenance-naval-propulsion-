@@ -866,7 +866,7 @@ def grafica_diagnostico(
 
         title=dict(
             text=(
-                "Efecto de la degradación "
+                "Efecto de la degradación sobre mf y T48 "
                 "según la velocidad"
             ),
 
