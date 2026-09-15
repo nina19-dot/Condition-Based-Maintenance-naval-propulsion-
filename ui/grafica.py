@@ -646,18 +646,18 @@ def grafica_diagnostico(
         ),
 
         legend=dict(
-    orientation="h",
+        orientation="h",
 
-    # Colocar la leyenda arriba del área de la gráfica
-    yanchor="bottom",
-    y=1.015,
+         # Colocar la leyenda arriba del área de la gráfica
+        yanchor="bottom",
+        y=1.015,
 
-    xanchor="left",
-    x=0.01,
+        xanchor="left",
+        x=0.01,
 
-    font=dict(
+        font=dict(
         size=12
-    ),
+        ),
 
     bgcolor="rgba(255,255,255,0.78)",
 
