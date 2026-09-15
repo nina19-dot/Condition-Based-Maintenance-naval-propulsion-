@@ -306,7 +306,7 @@ st.markdown(
 st.write(
     "Comparación del flujo de combustible y la temperatura de salida de la turbina" 
      " entre los estados extremos de degradación simulados, mostrando además la condición operativa" 
-     "seleccionada por el usuario."
+     " seleccionada por el usuario."
 )
 
 grafica_diagnostico(
