@@ -98,44 +98,45 @@ def tarjeta_estado(
             f"antes del límite de {limite:.2f} {unidad}."
         )
 
+
+    html = (
+        f'<div style="'
+        f'background:{fondo};'
+        f'border:2px solid {borde};'
+        f'border-radius:12px;'
+        f'padding:20px 24px;'
+        f'margin-top:8px;'
+        f'margin-bottom:8px;'
+        f'min-height:145px;'
+        f'">'
+        f'<div style="'
+        f'color:{DIAL};'
+        f'font-size:22px;'
+        f'font-weight:800;'
+        f'margin-bottom:10px;'
+        f'">'
+        f'{icono} {titulo}'
+        f'</div>'
+        f'<div style="'
+        f'color:{DIAL};'
+        f'font-size:19px;'
+        f'font-weight:700;'
+        f'margin-bottom:8px;'
+        f'">'
+        f'{estado}'
+        f'</div>'
+        f'<div style="'
+        f'color:{MIST};'
+        f'font-size:17px;'
+        f'line-height:1.5;'
+        f'">'
+        f'{detalle}'
+        f'</div>'
+        f'</div>'
+    )
+
     st.markdown(
-        f"""
-        <div style="
-            background:{fondo};
-            border:2px solid {borde};
-            border-radius:12px;
-            padding:18px 22px;
-            margin-top:8px;
-            margin-bottom:8px;
-            min-height:125px;
-        ">
-            <div style="
-                color:{DIAL};
-                font-size:20px;
-                font-weight:800;
-                margin-bottom:6px;
-            ">
-                {icono} {titulo}
-            </div>
-
-            <div style="
-                color:{DIAL};
-                font-size:18px;
-                font-weight:700;
-                margin-bottom:5px;
-            ">
-                {estado}
-            </div>
-
-            <div style="
-                color:{MIST};
-                font-size:16px;
-                line-height:1.45;
-            ">
-                {detalle}
-            </div>
-        </div>
-        """,
+        html,
         unsafe_allow_html=True
     )
 
@@ -349,11 +350,7 @@ def grafica_diagnostico(
             ],
 
             mode="lines",
-
-            name=(
-                f"Límite mf = "
-                f"{limite_mf:.2f} kg/s"
-            ),
+            showlegend=False,
 
             line=dict(
                 color=STEEL,
@@ -392,12 +389,7 @@ def grafica_diagnostico(
             ],
 
             mode="lines",
-
-            name=(
-                f"Límite T48 = "
-                f"{limite_t48:.1f} K"
-            ),
-
+            showlegend=False,
             line=dict(
                 color=INK,
                 width=2.5,
@@ -625,8 +617,9 @@ def grafica_diagnostico(
             ),
 
             x=0.02,
+            y=0.98,
             xanchor="left",
-
+            yanchor="top",
             font=dict(
                 size=24,
                 color=INK,
@@ -639,7 +632,7 @@ def grafica_diagnostico(
         margin=dict(
             l=70,
             r=85,
-            t=115,
+            t=145,
             b=70
         ),
 
@@ -653,23 +646,23 @@ def grafica_diagnostico(
         ),
 
         legend=dict(
-            orientation="h",
+        orientation="h",
 
-            yanchor="bottom",
-            y=1.02,
+        yanchor="top",
+        y=0.96,
 
-            xanchor="left",
-            x=0,
+        xanchor="left",
+        x=0.01,
 
-            font=dict(
-                size=12
-            ),
-
-            bgcolor="rgba(255,255,255,0.70)",
-
-            bordercolor=MIST,
-            borderwidth=1
+        font=dict(
+        size=12
         ),
+    
+        bgcolor="rgba(255,255,255,0.78)",
+
+        bordercolor=MIST,
+        borderwidth=1
+    ),
 
         hovermode="x unified"
     )
