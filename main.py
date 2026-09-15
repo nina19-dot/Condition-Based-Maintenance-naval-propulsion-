@@ -59,37 +59,43 @@ data = cargar_datos()
 with st.spinner("Inicializando modelos de degradación..."):
     rf_kMc, rf_kMt = entrenar_modelos(data)
 
-
 # ============================================================
-# PORTADA
+# ENCABEZADO PRINCIPAL
 # ============================================================
 
 st.markdown(
     """
-    <p class="matricula">
-        CONDITION-BASED MAINTENANCE · NAVAL PROPULSION
-    </p>
+    <section class="hero-section">
 
-    <p class="titular">
-        Estimación del estado de degradación
-        de una planta de propulsión naval
-    </p>
+        <div class="hero-kicker">
+            MANTENIMIENTO BASADO EN CONDICIÓN · PROPULSIÓN NAVAL
+        </div>
 
-    <p class="entrada">
-        La plataforma utiliza las condiciones de operación
-        y las variables de telemetría para estimar el estado
-        de degradación del compresor y de la turbina.
-    </p>
+        <div class="hero-title">
+            Mantenimiento Basado en Condición para Propulsión Naval
+        </div>
+
+        <div class="hero-subtitle">
+            Estimación del estado de degradación del compresor
+            y la turbina mediante telemetría operativa
+        </div>
+
+        <div class="hero-description">
+            Esta plataforma analiza las condiciones de operación y las
+            variables de telemetría de una planta de propulsión naval para
+            estimar el nivel de degradación del compresor y de la turbina.
+            Su propósito es apoyar el diagnóstico del sistema y la toma de
+            decisiones de monitoreo, inspección y mantenimiento preventivo.
+        </div>
+
+    </section>
     """,
     unsafe_allow_html=True
 )
 
-st.divider()
-
 
 # ============================================================
 # PLANTA CODLAG
-# Reservamos su lugar ANTES de los controles
 # ============================================================
 
 st.header("Planta de propulsión CODLAG")
