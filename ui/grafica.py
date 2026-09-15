@@ -22,7 +22,7 @@ from config import (
 
 def preparar_datos_diagnostico(data):
 
-    # Condición óptima
+    # Condición óptima / sin degradación
     sano = data[
         np.isclose(data["kMc"], 1.000) &
         np.isclose(data["kMt"], 1.000)
@@ -61,77 +61,221 @@ def preparar_datos_diagnostico(data):
 
 
 # ============================================================
+# CLASIFICAR CONDICIÓN OPERATIVA
+# ============================================================
+
+def clasificar_condicion(
+    valor_actual,
+    valor_desgaste,
+    limite_critico
+):
+
+    # CRÍTICO:
+    # supera el límite negro punteado
+    if valor_actual > limite_critico:
+
+        return (
+            "CRÍTICO",
+            "⛔",
+            "#541F1F",
+            SIGNAL,
+            "Detener la máquina y realizar las "
+            "reparaciones correspondientes."
+        )
+
+    # PREVENTIVO:
+    # alcanza o supera la curva degradada
+    elif valor_actual >= valor_desgaste:
+
+        return (
+            "SERVICIO PREVENTIVO",
+            "⚠",
+            "#544019",
+            BRASS,
+            "La condición actual alcanzó la línea de "
+            "desgaste. Programar servicio preventivo."
+        )
+
+    # NORMAL
+    else:
+
+        return (
+            "NORMAL",
+            "✓",
+            "#123F38",
+            SEA,
+            "La condición actual se mantiene por "
+            "debajo de la línea de desgaste."
+        )
+
+
+# ============================================================
 # TARJETA DE ESTADO
 # ============================================================
 
 def tarjeta_estado(
     titulo,
     valor_actual,
-    limite,
-    unidad,
-    mantenimiento
+    valor_desgaste,
+    limite_critico,
+    unidad
 ):
 
-    if mantenimiento:
-
-        fondo = "#4B1F1F"
-        borde = SIGNAL
-        icono = "⚠"
-        estado = "SE REQUIERE MANTENIMIENTO"
-
-        detalle = (
-            f"El valor actual de {valor_actual:.2f} {unidad} "
-            f"supera el límite de {limite:.2f} {unidad}."
-        )
-
-    else:
-
-        fondo = "#123F38"
-        borde = SEA
-        icono = "✓"
-        estado = "DENTRO DEL LÍMITE OPERATIVO"
-
-        margen = limite - valor_actual
-
-        detalle = (
-            f"Margen disponible: {margen:.2f} {unidad} "
-            f"antes del límite de {limite:.2f} {unidad}."
-        )
-
+    (
+        estado,
+        icono,
+        fondo,
+        borde,
+        mensaje
+    ) = clasificar_condicion(
+        valor_actual,
+        valor_desgaste,
+        limite_critico
+    )
 
     html = (
         f'<div style="'
         f'background:{fondo};'
         f'border:2px solid {borde};'
         f'border-radius:12px;'
-        f'padding:20px 24px;'
-        f'margin-top:8px;'
-        f'margin-bottom:8px;'
-        f'min-height:145px;'
+        f'padding:18px 20px;'
+        f'margin-bottom:16px;'
         f'">'
+
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:22px;'
+        f'font-size:20px;'
         f'font-weight:800;'
-        f'margin-bottom:10px;'
+        f'margin-bottom:9px;'
         f'">'
         f'{icono} {titulo}'
         f'</div>'
+
         f'<div style="'
         f'color:{DIAL};'
-        f'font-size:19px;'
-        f'font-weight:700;'
-        f'margin-bottom:8px;'
+        f'font-size:17px;'
+        f'font-weight:800;'
+        f'margin-bottom:11px;'
         f'">'
         f'{estado}'
         f'</div>'
+
         f'<div style="'
         f'color:{MIST};'
-        f'font-size:17px;'
+        f'font-size:14px;'
+        f'line-height:1.55;'
+        f'">'
+        f'Actual: <b>{valor_actual:.2f} {unidad}</b><br>'
+        f'Línea de desgaste: '
+        f'<b>{valor_desgaste:.2f} {unidad}</b><br>'
+        f'Límite crítico: '
+        f'<b>{limite_critico:.2f} {unidad}</b><br><br>'
+        f'{mensaje}'
+        f'</div>'
+
+        f'</div>'
+    )
+
+    st.markdown(
+        html,
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+# TARJETA DE ESTADO GLOBAL
+# ============================================================
+
+def tarjeta_estado_global(
+    estado_mf,
+    estado_t48
+):
+
+    # --------------------------------------------------------
+    # CRÍTICO
+    # --------------------------------------------------------
+
+    if (
+        estado_mf == "CRÍTICO"
+        or estado_t48 == "CRÍTICO"
+    ):
+
+        fondo = "#541F1F"
+        borde = SIGNAL
+        icono = "⛔"
+
+        titulo = "ESTADO CRÍTICO"
+
+        mensaje = (
+            "Al menos una variable superó su límite crítico. "
+            "Detener la máquina y realizar las reparaciones "
+            "correspondientes antes de continuar la operación."
+        )
+
+    # --------------------------------------------------------
+    # SERVICIO PREVENTIVO
+    # --------------------------------------------------------
+
+    elif (
+        estado_mf == "SERVICIO PREVENTIVO"
+        or estado_t48 == "SERVICIO PREVENTIVO"
+    ):
+
+        fondo = "#544019"
+        borde = BRASS
+        icono = "⚠"
+
+        titulo = "SERVICIO PREVENTIVO"
+
+        mensaje = (
+            "Al menos una variable alcanzó o superó "
+            "su línea de desgaste. Programar servicio "
+            "preventivo antes de llegar al estado crítico."
+        )
+
+    # --------------------------------------------------------
+    # NORMAL
+    # --------------------------------------------------------
+
+    else:
+
+        fondo = "#123F38"
+        borde = SEA
+        icono = "✓"
+
+        titulo = "OPERACIÓN NORMAL"
+
+        mensaje = (
+            "El flujo de combustible y la temperatura "
+            "permanecen por debajo de sus líneas de desgaste."
+        )
+
+    html = (
+        f'<div style="'
+        f'background:{fondo};'
+        f'border:2px solid {borde};'
+        f'border-radius:12px;'
+        f'padding:17px 20px;'
+        f'margin-top:6px;'
+        f'">'
+
+        f'<div style="'
+        f'color:{DIAL};'
+        f'font-size:18px;'
+        f'font-weight:800;'
+        f'margin-bottom:8px;'
+        f'">'
+        f'{icono} {titulo}'
+        f'</div>'
+
+        f'<div style="'
+        f'color:{MIST};'
+        f'font-size:14px;'
         f'line-height:1.5;'
         f'">'
-        f'{detalle}'
+        f'{mensaje}'
         f'</div>'
+
         f'</div>'
     )
 
@@ -153,19 +297,136 @@ def grafica_diagnostico(
 
     tabla = preparar_datos_diagnostico(data)
 
+
     # ========================================================
-    # LÍMITES DEMOSTRATIVOS
+    # LÍMITE CRÍTICO DEMOSTRATIVO
     # ========================================================
 
-    # Se conserva el mismo criterio utilizado en Colab:
-    # 98% del máximo observado en condición degradada.
+    # Debe quedar por ENCIMA de la condición degradada.
+    # Se utiliza 5% adicional sobre el máximo degradado.
+    #
+    # Esto permite:
+    #
+    # NORMAL
+    # ↓
+    # línea degradada
+    # ↓
+    # SERVICIO PREVENTIVO
+    # ↓
+    # línea crítica
+    # ↓
+    # CRÍTICO
+
+    FACTOR_CRITICO = 1.05
 
     limite_t48 = (
-        tabla["T48_Degradado"].max() * 0.98
+        tabla["T48_Degradado"].max()
+        * FACTOR_CRITICO
     )
 
     limite_mf = (
-        tabla["mf_Degradado"].max() * 0.98
+        tabla["mf_Degradado"].max()
+        * FACTOR_CRITICO
+    )
+
+
+    # ========================================================
+    # CONDICIÓN ACTUAL
+    # ========================================================
+
+    mf_actual = None
+    t48_actual = None
+
+    mf_desgaste = None
+    t48_desgaste = None
+
+
+    if (
+        valores is not None
+        and velocidad_actual is not None
+    ):
+
+        mf_actual = valores.get("mf")
+        t48_actual = valores.get("T48")
+
+
+        # ----------------------------------------------------
+        # Línea de desgaste en la velocidad actual
+        # ----------------------------------------------------
+
+        mf_desgaste = np.interp(
+            velocidad_actual,
+            tabla["v"],
+            tabla["mf_Degradado"]
+        )
+
+        t48_desgaste = np.interp(
+            velocidad_actual,
+            tabla["v"],
+            tabla["T48_Degradado"]
+        )
+
+
+        if mf_actual is not None:
+            mf_actual = float(mf_actual)
+
+        if t48_actual is not None:
+            t48_actual = float(t48_actual)
+
+
+    # ========================================================
+    # DETERMINAR ESTADO ACTUAL
+    # ========================================================
+
+    estado_mf = None
+    estado_t48 = None
+
+
+    if (
+        mf_actual is not None
+        and mf_desgaste is not None
+    ):
+
+        estado_mf = clasificar_condicion(
+            mf_actual,
+            mf_desgaste,
+            limite_mf
+        )[0]
+
+
+    if (
+        t48_actual is not None
+        and t48_desgaste is not None
+    ):
+
+        estado_t48 = clasificar_condicion(
+            t48_actual,
+            t48_desgaste,
+            limite_t48
+        )[0]
+
+
+    # ========================================================
+    # COLOR DE LOS PUNTOS ACTUALES
+    # ========================================================
+
+    def color_estado(estado):
+
+        if estado == "CRÍTICO":
+            return SIGNAL
+
+        elif estado == "SERVICIO PREVENTIVO":
+            return BRASS
+
+        return SEA
+
+
+    color_mf_actual = color_estado(
+        estado_mf
+    )
+
+    color_t48_actual = color_estado(
+        estado_t48
     )
 
 
@@ -201,7 +462,7 @@ def grafica_diagnostico(
             ),
 
             marker=dict(
-                size=8,
+                size=7,
                 symbol="circle",
                 color=SEA
             ),
@@ -238,7 +499,7 @@ def grafica_diagnostico(
             ),
 
             marker=dict(
-                size=9,
+                size=8,
                 symbol="square",
                 color=STEEL
             ),
@@ -276,7 +537,7 @@ def grafica_diagnostico(
             ),
 
             marker=dict(
-                size=9,
+                size=8,
                 symbol="triangle-up",
                 color=BRASS
             ),
@@ -313,7 +574,7 @@ def grafica_diagnostico(
             ),
 
             marker=dict(
-                size=9,
+                size=8,
                 symbol="diamond",
                 color=SIGNAL
             ),
@@ -331,9 +592,7 @@ def grafica_diagnostico(
 
 
     # ========================================================
-    # LÍMITE DE COMBUSTIBLE
-    # IMPORTANTE:
-    # Se agrega como Scatter para que NO altere el eje de T48
+    # LÍMITE CRÍTICO DE mf
     # ========================================================
 
     fig.add_trace(
@@ -350,16 +609,17 @@ def grafica_diagnostico(
             ],
 
             mode="lines",
+
             showlegend=False,
 
             line=dict(
-                color=STEEL,
+                color=INK,
                 width=2,
-                dash="dot"
+                dash="dashdot"
             ),
 
             hovertemplate=(
-                f"<b>Límite de combustible</b><br>"
+                "<b>Límite crítico de combustible</b><br>"
                 f"{limite_mf:.3f} kg/s"
                 "<extra></extra>"
             )
@@ -370,9 +630,7 @@ def grafica_diagnostico(
 
 
     # ========================================================
-    # LÍMITE DE T48
-    # Se dibuja como una serie SOBRE EL EJE SECUNDARIO.
-    # Esto evita el problema del eje mf 0–800.
+    # LÍMITE CRÍTICO DE T48
     # ========================================================
 
     fig.add_trace(
@@ -389,7 +647,9 @@ def grafica_diagnostico(
             ],
 
             mode="lines",
+
             showlegend=False,
+
             line=dict(
                 color=INK,
                 width=2.5,
@@ -397,7 +657,7 @@ def grafica_diagnostico(
             ),
 
             hovertemplate=(
-                f"<b>Límite térmico</b><br>"
+                "<b>Límite crítico térmico</b><br>"
                 f"{limite_t48:.1f} K"
                 "<extra></extra>"
             )
@@ -408,21 +668,11 @@ def grafica_diagnostico(
 
 
     # ========================================================
-    # CONDICIÓN ACTUAL
+    # VELOCIDAD ACTUAL
     # ========================================================
-
-    mf_actual = None
-    t48_actual = None
-
-    if valores is not None:
-
-        mf_actual = valores.get("mf")
-        t48_actual = valores.get("T48")
-
 
     if velocidad_actual is not None:
 
-        # Línea vertical de velocidad
         fig.add_vline(
 
             x=velocidad_actual,
@@ -454,18 +704,6 @@ def grafica_diagnostico(
         and mf_actual is not None
     ):
 
-        mf_actual = float(mf_actual)
-
-        mantenimiento_mf = (
-            mf_actual >= limite_mf
-        )
-
-        color_mf_actual = (
-            SIGNAL
-            if mantenimiento_mf
-            else SEA
-        )
-
         fig.add_trace(
 
             go.Scatter(
@@ -477,7 +715,7 @@ def grafica_diagnostico(
                 name="mf actual",
 
                 marker=dict(
-                    size=17,
+                    size=16,
                     color=color_mf_actual,
                     symbol="star",
                     line=dict(
@@ -490,7 +728,8 @@ def grafica_diagnostico(
                     "<b>mf actual</b><br>"
                     f"Velocidad: "
                     f"{velocidad_actual:.0f} knots<br>"
-                    f"mf: {mf_actual:.3f} kg/s"
+                    f"mf: {mf_actual:.3f} kg/s<br>"
+                    f"Estado: {estado_mf}"
                     "<extra></extra>"
                 )
             ),
@@ -508,18 +747,6 @@ def grafica_diagnostico(
         and t48_actual is not None
     ):
 
-        t48_actual = float(t48_actual)
-
-        mantenimiento_t48 = (
-            t48_actual >= limite_t48
-        )
-
-        color_t48_actual = (
-            SIGNAL
-            if mantenimiento_t48
-            else BRASS
-        )
-
         fig.add_trace(
 
             go.Scatter(
@@ -531,7 +758,7 @@ def grafica_diagnostico(
                 name="T48 actual",
 
                 marker=dict(
-                    size=18,
+                    size=17,
                     color=color_t48_actual,
                     symbol="star",
                     line=dict(
@@ -544,7 +771,8 @@ def grafica_diagnostico(
                     "<b>T48 actual</b><br>"
                     f"Velocidad: "
                     f"{velocidad_actual:.0f} knots<br>"
-                    f"T48: {t48_actual:.1f} K"
+                    f"T48: {t48_actual:.1f} K<br>"
+                    f"Estado: {estado_t48}"
                     "<extra></extra>"
                 )
             ),
@@ -557,8 +785,10 @@ def grafica_diagnostico(
     # RANGOS DE LOS EJES
     # ========================================================
 
-    # Combustible:
-    # fuerza el eje izquierdo a la escala correcta.
+    # --------------------------------------------------------
+    # mf
+    # --------------------------------------------------------
+
     mf_max_visual = max(
         tabla["mf_Optimo"].max(),
         tabla["mf_Degradado"].max(),
@@ -566,15 +796,19 @@ def grafica_diagnostico(
     )
 
     if mf_actual is not None:
+
         mf_max_visual = max(
             mf_max_visual,
             mf_actual
         )
 
-    mf_max_visual *= 1.08
+    mf_max_visual *= 1.07
 
 
-    # Temperatura en Kelvin
+    # --------------------------------------------------------
+    # T48
+    # --------------------------------------------------------
+
     t48_min_visual = min(
         tabla["T48_Optimo"].min(),
         tabla["T48_Degradado"].min()
@@ -601,7 +835,7 @@ def grafica_diagnostico(
     margen_temp = (
         t48_max_visual -
         t48_min_visual
-    ) * 0.08
+    ) * 0.07
 
 
     # ========================================================
@@ -609,26 +843,34 @@ def grafica_diagnostico(
     # ========================================================
 
     fig.update_layout(
+
         title=dict(
-            text="Efecto de la degradación según la velocidad",
+            text=(
+                "Efecto de la degradación "
+                "según la velocidad"
+            ),
+
             x=0.02,
-            y=0.93,
+            y=0.95,
+
             xanchor="left",
             yanchor="top",
+
             font=dict(
-                size=24,
+                size=21,
                 color=INK,
                 family="Arial Black"
             )
         ),
 
-        height=650,
+        # Más pequeña para dejar espacio a las tarjetas
+        height=535,
 
         margin=dict(
-            l=70,
-            r=85,
-            t=145,
-            b=70
+            l=65,
+            r=65,
+            t=125,
+            b=60
         ),
 
         paper_bgcolor=DIAL,
@@ -637,21 +879,24 @@ def grafica_diagnostico(
         font=dict(
             color=INK,
             family="Arial",
-            size=13
+            size=11
         ),
 
         legend=dict(
             orientation="h",
+
             yanchor="bottom",
-            y=1.015,
+            y=1.01,
+
             xanchor="left",
             x=0.01,
 
             font=dict(
-                size=12
+                size=10
             ),
 
             bgcolor="rgba(255,255,255,0.78)",
+
             bordercolor=MIST,
             borderwidth=1
         ),
@@ -685,11 +930,11 @@ def grafica_diagnostico(
 
         title_font=dict(
             color=INK,
-            size=16
+            size=14
         ),
 
         tickfont=dict(
-            size=13
+            size=11
         )
     )
 
@@ -723,18 +968,18 @@ def grafica_diagnostico(
 
         title_font=dict(
             color=SEA,
-            size=16
+            size=14
         ),
 
         tickfont=dict(
             color=SEA,
-            size=13
+            size=11
         )
     )
 
 
     # ========================================================
-    # EJE Y DERECHO — T48 EN KELVIN
+    # EJE Y DERECHO — T48
     # ========================================================
 
     fig.update_yaxes(
@@ -756,13 +1001,24 @@ def grafica_diagnostico(
 
         title_font=dict(
             color=SIGNAL,
-            size=16
+            size=14
         ),
 
         tickfont=dict(
             color=SIGNAL,
-            size=13
+            size=11
         )
+    )
+
+
+    # ========================================================
+    # DISTRIBUCIÓN:
+    # GRÁFICA IZQUIERDA + CONDICIONES DERECHA
+    # ========================================================
+
+    col_grafica, col_estado = st.columns(
+        [3.25, 1.15],
+        gap="large"
     )
 
 
@@ -770,122 +1026,69 @@ def grafica_diagnostico(
     # MOSTRAR GRÁFICA
     # ========================================================
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
+    with col_grafica:
 
-        config={
-            "displayModeBar": False
-        }
-    )
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
 
-
-    # ========================================================
-    # DIAGNÓSTICO DE COMBUSTIBLE Y TEMPERATURA
-    # ========================================================
-
-    if (
-        mf_actual is not None
-        and t48_actual is not None
-    ):
-
-        mantenimiento_mf = (
-            mf_actual >= limite_mf
-        )
-
-        mantenimiento_t48 = (
-            t48_actual >= limite_t48
+            config={
+                "displayModeBar": False
+            }
         )
 
 
-        col_mf, col_t48 = st.columns(2)
+    # ========================================================
+    # CONDICIONES ACTUALES
+    # ========================================================
+
+    with col_estado:
+
+        st.markdown(
+            "### Condición actual"
+        )
 
 
-        with col_mf:
+        if (
+            mf_actual is not None
+            and mf_desgaste is not None
+        ):
 
             tarjeta_estado(
-                titulo="Condición de combustible",
+                titulo="Combustible",
                 valor_actual=mf_actual,
-                limite=limite_mf,
-                unidad="kg/s",
-                mantenimiento=mantenimiento_mf
+                valor_desgaste=mf_desgaste,
+                limite_critico=limite_mf,
+                unidad="kg/s"
             )
 
 
-        with col_t48:
+        if (
+            t48_actual is not None
+            and t48_desgaste is not None
+        ):
 
             tarjeta_estado(
-                titulo="Condición térmica",
+                titulo="Temperatura T48",
                 valor_actual=t48_actual,
-                limite=limite_t48,
-                unidad="K",
-                mantenimiento=mantenimiento_t48
+                valor_desgaste=t48_desgaste,
+                limite_critico=limite_t48,
+                unidad="K"
             )
 
 
         # ====================================================
-        # ALERTA GLOBAL
+        # ESTADO GLOBAL
         # ====================================================
 
         if (
-            mantenimiento_mf
-            or mantenimiento_t48
+            estado_mf is not None
+            and estado_t48 is not None
         ):
 
-            causas = []
-
-            if mantenimiento_mf:
-                causas.append(
-                    "el flujo de combustible"
-                )
-
-            if mantenimiento_t48:
-                causas.append(
-                    "la temperatura T48"
-                )
-
-            texto_causas = " y ".join(causas)
-
-            st.markdown(
-                f"""
-                <div style="
-                    background:#4B1F1F;
-                    border:2px solid {SIGNAL};
-                    border-radius:12px;
-                    padding:18px 22px;
-                    margin-top:12px;
-                    color:{DIAL};
-                    font-size:19px;
-                    font-weight:700;
-                ">
-                    ⚠ Mantenimiento recomendado:
-                    {texto_causas} ha superado el
-                    límite operativo establecido.
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        else:
-
-            st.markdown(
-                f"""
-                <div style="
-                    background:#123F38;
-                    border:2px solid {SEA};
-                    border-radius:12px;
-                    padding:18px 22px;
-                    margin-top:12px;
-                    color:{DIAL};
-                    font-size:19px;
-                    font-weight:700;
-                ">
-                    ✓ Condición operativa dentro de
-                    los límites establecidos de combustible
-                    y temperatura.
-                </div>
-                """,
-                unsafe_allow_html=True
+            tarjeta_estado_global(
+                estado_mf,
+                estado_t48
             )
 
 
@@ -894,9 +1097,10 @@ def grafica_diagnostico(
     # ========================================================
 
     st.caption(
-        "Los límites mostrados conservan el criterio "
-        "demostrativo utilizado en el análisis: 98% del "
-        "máximo observado en la condición de mayor "
-        "degradación simulada para mf y T48. "
-        "No corresponden a límites oficiales del fabricante."
+        "La curva degradada se utiliza como referencia "
+        "para iniciar servicio preventivo. El límite crítico "
+        "se establece, con fines demostrativos, 5% por encima "
+        "del máximo observado en la condición de mayor "
+        "degradación simulada. Estos criterios no corresponden "
+        "a límites oficiales del fabricante."
     )
