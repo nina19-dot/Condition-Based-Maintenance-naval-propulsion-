@@ -20,7 +20,7 @@ from ui.results import (
     resultado_compresor,
     resultado_turbina
 )
-
+from ui.grafica import grafica_diagnostico
 
 # ============================================================
 # CONFIGURACIÓN
@@ -295,3 +295,23 @@ else:
         "Selecciona un análisis para obtener "
         "el estado estimado del componente."
     )
+
+# ============================================================
+# Grafica 
+# ============================================================
+st.markdown(
+    "## Impacto operativo de la degradación"
+)
+
+st.write(
+    "Comparación del consumo de combustible y "
+    "la temperatura de salida de la turbina "
+    "entre una condición sana y una condición "
+    "de alta degradación."
+)
+
+grafica_diagnostico(
+    data=data,
+    velocidad_actual=velocidad,
+    valores=valores
+)
