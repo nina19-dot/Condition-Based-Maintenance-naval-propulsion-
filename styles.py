@@ -65,6 +65,8 @@ def load_css():
             padding: 12px 4px 26px 4px;
             margin-bottom: 10px;
             max-width: 1380px;
+            margin-right: auto;
+            text-align: center;
         }}
 
         .hero-kicker {{
@@ -75,6 +77,7 @@ def load_css():
             letter-spacing: 0.14em;
             text-transform: uppercase;
             margin-bottom: 20px;
+            text-align: center;
         }}
 
         .hero-title {{
@@ -84,6 +87,7 @@ def load_css():
             line-height: 1.08;
             letter-spacing: -0.03em;
             margin-bottom: 14px;
+            text-align: center;
         }}
 
         .hero-subtitle {{
@@ -93,6 +97,7 @@ def load_css():
             line-height: 1.35;
             margin-bottom: 16px;
             max-width: 1180px;
+            text-align: center;
         }}
 
         .hero-description {{
@@ -101,6 +106,9 @@ def load_css():
             font-weight: 400;
             line-height: 1.75;
             max-width: 1240px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
         }}
 
         /* =========================================================
