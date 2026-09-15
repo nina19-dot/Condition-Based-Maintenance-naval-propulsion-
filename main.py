@@ -147,6 +147,32 @@ esquema_planta(
 st.divider()
 
 # ============================================================
+# DIAGRAMA DEL PROCESO
+# ============================================================
+
+st.header("Proceso de la turbina de gas")
+
+st.markdown(
+    """
+    <p class="section-description">
+        Las lecturas seleccionadas se muestran en la etapa
+        física correspondiente del proceso.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+diagrama_proceso(
+    valores=valores,
+    velocidad=velocidad,
+    kMc=st.session_state.kMc,
+    kMt=st.session_state.kMt
+)
+
+
+st.divider()
+
+# ============================================================
 # BOTONES DE ANÁLISIS
 # ============================================================
 
@@ -218,34 +244,6 @@ with b3:
         st.session_state.active_component = "both"
 
         st.rerun()
-
-
-# ============================================================
-# DIAGRAMA DEL PROCESO
-# ============================================================
-
-st.header("Proceso de la turbina de gas")
-
-st.markdown(
-    """
-    <p class="section-description">
-        Las lecturas seleccionadas se muestran en la etapa
-        física correspondiente del proceso.
-    </p>
-    """,
-    unsafe_allow_html=True
-)
-
-diagrama_proceso(
-    valores=valores,
-    velocidad=velocidad,
-    kMc=st.session_state.kMc,
-    kMt=st.session_state.kMt
-)
-
-
-st.divider()
-
 
 # ============================================================
 # RESULTADOS
