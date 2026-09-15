@@ -162,6 +162,51 @@ def load_css():
         }}
 
         /* =========================================================
+           ENCABEZADOS DE SECCIÓN
+           ========================================================= */
+        
+        .section-header {{
+            max-width: 1250px;
+            margin-bottom: 24px;
+            padding-top: 10px;
+        }}
+        
+        .section-kicker {{
+            color: {BRASS};
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }}
+        
+        .section-title {{
+            color: {DIAL};
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }}
+        
+        .section-subtitle {{
+            color: {DIAL};
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.45;
+            margin-bottom: 10px;
+            max-width: 1050px;
+        }}
+        
+        .section-text {{
+            color: {MIST};
+            font-size: 1rem;
+            line-height: 1.65;
+            max-width: 1150px;
+        }}
+
+        /* =========================================================
            TARJETAS / CAJAS
            ========================================================= */
         .panel-card {{
