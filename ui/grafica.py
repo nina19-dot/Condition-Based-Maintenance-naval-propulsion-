@@ -1128,9 +1128,11 @@ def grafica_diagnostico(
 
     st.caption(
         "La curva degradada se utiliza como referencia "
-        "para iniciar servicio preventivo. El límite crítico "
-        "se establece, con fines demostrativos, 5% por encima "
-        "del máximo observado en la condición de mayor "
-        "degradación simulada. Estos criterios no corresponden "
-        "a límites oficiales del fabricante."
+        "para identificar el inicio de desgaste y determinar "
+        "la necesidad de servicio preventivo general. "
+        "El límite crítico se establece, con fines demostrativos, "
+        "y al superar este límite se considera una condición crítica "
+        "que requiere detener la máquina y realizar las reparaciones "
+        "correspondientes. Estos criterios no corresponden a "
+        "límites oficiales del fabricante."
     )
