@@ -90,6 +90,52 @@ def load_css():
             margin-bottom: 10px;
         }}
 
+        /* =========================================================
+           ENCABEZADO PRINCIPAL
+           ========================================================= */
+
+        .hero-section {
+            padding: 24px 4px 34px 4px;
+            margin-bottom: 12px;
+            max-width: 1350px;
+        }
+
+        .hero-kicker {
+            color: #D98A20;
+            font-family: "Courier New", monospace;
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        
+        .hero-title {
+            color: #EDE7D8;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+        
+        .hero-subtitle {
+            color: #EDE7D8;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 16px;
+            max-width: 1200px;
+        }
+        
+        .hero-description {
+            color: #9FB2AF;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 1.65;
+            max-width: 1250px;
+        }
+
         [data-testid="stMetricValue"] {{
             color: {BRASS} !important;
             font-family: 'IBM Plex Mono', monospace;
