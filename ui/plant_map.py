@@ -1100,6 +1100,6 @@ def esquema_planta(
 
     components.html(
         html,
-        height=900,
+        height=580,
         scrolling=False
     )
