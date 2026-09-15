@@ -337,7 +337,7 @@ def grafica_diagnostico(
     # ↓
     # CRÍTICO
 
-    FACTOR_CRITICO = 1.05
+    FACTOR_CRITICO = 0.98
 
     limite_t48 = (
         tabla["T48_Degradado"].max()
