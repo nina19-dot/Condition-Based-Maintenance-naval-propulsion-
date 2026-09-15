@@ -94,21 +94,26 @@ Esta plataforma analiza las condiciones de operación y las variables de telemet
 # PLANTA CODLAG
 # ============================================================
 
-st.header("Planta de propulsión CODLAG")
-
 st.markdown(
     """
-    <p class="section-description">
-        La telemetría se muestra directamente en el componente
-        o punto físico correspondiente de la planta.
-    </p>
+<section class="section-header">
+<div class="section-kicker">ARQUITECTURA DEL SISTEMA · TELEMETRÍA OPERATIVA</div>
+
+<div class="section-title">
+Arquitectura y telemetría de la planta CODLAG
+</div>
+
+<div class="section-subtitle">
+Visualización integrada de los componentes y variables operativas del sistema de propulsión
+</div>
+
+<div class="section-text">
+El esquema representa la arquitectura de la planta CODLAG y permite relacionar cada variable de telemetría con el componente o punto físico donde se origina. La visualización integra la turbina de gas, motores eléctricos, embragues, cajas de engranajes y líneas de propulsión, facilitando la interpretación de las condiciones operativas antes de realizar el análisis de degradación.
+</div>
+</section>
     """,
     unsafe_allow_html=True
 )
-
-plant_placeholder = st.empty()
-
-st.divider()
 
 # ============================================================
 # CONDICIONES DE OPERACIÓN
